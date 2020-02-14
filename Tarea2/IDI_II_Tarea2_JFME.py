@@ -8,23 +8,27 @@
 import time
 import sympy as sp
 from sympy.plotting import plot
+import math
+from sympy import E, pi
 
 
 # -- ------------------------------------------------------------ FUNCION: Newton-Raphson -- #
 # -- ------------------------------------------------------------------------------------ -- #
 # -- Metodo de newton-raphson con variable simbolica
 
-def f_newton_raphson(param_f, param_x0, param_e):
+def f_newton_raphson(param_f, param_x0, param_e, param_msn):
     """
     Parameters
     ----------
-    param_f :
-    param_x0 :
-    param_e :
+    param_f : str : funcion para aproximar escrita entre comillas como string.
+    param_x0 : int / float : valor inicial para correr el metodo.
+    param_e : notacion cientifica (10e-4) : cota de error a superar.
+    param_msn : bool : True = imprimir mensajes de calculos
 
     Returns
     -------
-    val =
+    dict('iteraciones' = iteraciones, 'tiempo' = tiempo, 'error' = epsilon,
+         'valor_aprox' = x0, 'grafica' = grafica)
 
     Debugging
     ---------
@@ -42,7 +46,7 @@ def f_newton_raphson(param_f, param_x0, param_e):
     param_f = sp.S(param_f)
 
     # Inicializar epislon en error
-    epsilon = 1
+    epsilon = .1
     # Para calculo de tiempo de ejecucion
     inicia = time.time()
     # Para guardar cantidad de interaciones realizadas
@@ -58,7 +62,7 @@ def f_newton_raphson(param_f, param_x0, param_e):
         # Rompe el ciclo si "cacha" el error de division entre 0
         except ZeroDivisionError:
             print("La derivada de la funcion evaluada en x0 dio 0.")
-            # Activar bandera de error para que pare ciclo
+            # Activar bandera de error para que pare ciclo e imprimir el error
             raise
         # Ultimo error calculado en metodo
         epsilon = abs((xn - x0) / xn)
@@ -66,34 +70,53 @@ def f_newton_raphson(param_f, param_x0, param_e):
         iteraciones += 1
         # Actualizar el valor
         x0 = xn
+        # Si param_msn == True, imprimir valores
+        if param_msn:
+            print('iteracion: ' + str(iteraciones) + ' | ' + 'Valor Aprox: ' + str(x0))
 
     # Tiempo total transcurrido utilizando la funcion
     tiempo = round(time.time() - inicia, 4)
 
-    # Grafica
-    grafica = param_f
-
     return {'iteraciones': iteraciones, 'tiempo': tiempo, 'error': epsilon,
-            'valor_aprox': x0, 'grafica': grafica}
+            'valor_aprox': x0}
 
 
-fa = 'x**3 - 2*x**2 - 5'
-fb = 'x - cos(x)'
-fc = 'x - 0.8 - 0.2*sin(x)'
-fd = 'log(x - 1) + cos(x-1)'
-fe = 'e**x - 3*x**2'
+# -- Plots
+# x = sp.Symbol('x')
+# sp.plotting.plot3d(f2, (x, 1.7, 1.75))
 
-ejercicio_a = f_newton_raphson(param_f=fc, param_x0=.1, param_e=10e-4)
-print(ejercicio_a)
+# -- Ejercicio 1
+f1a = 'x**3 - 2*x**2 - 5'
+f1b = 'x - cos(x)'
+f1c = 'x - 0.8 - 0.2*sin(x)'
+f1d = 'log(x - 1) + cos(x-1)'
+f1e = 'E**x - 3*x**2'
 
-ejercicio_b = f_newton_raphson(param_f=fb, param_x0=.1, param_e=10e-4)
-print(ejercicio_b)
+# ejercicio_a = f_newton_raphson(param_f=f1a, param_x0=.1, param_e=10e-4, param_msn=True)
+# print(ejercicio_a)
 
-ejercicio_c = f_newton_raphson(param_f=fc, param_x0=.1, param_e=10e-4)
-print(ejercicio_c)
+# ejercicio_b = f_newton_raphson(param_f=f1b, param_x0=.1, param_e=10e-4, param_msn=True)
+# print(ejercicio_b)
 
-ejercicio_d = f_newton_raphson(param_f=fd, param_x0=.1, param_e=10e-4)
-print(ejercicio_d)
+# ejercicio_c = f_newton_raphson(param_f=f1c, param_x0=2, param_e=10e-4, param_msn=True)
+# print(ejercicio_c)
 
-ejercicio_e = f_newton_raphson(param_f=fe, param_x0=.1, param_e=10e-4)
-print(ejercicio_e)
+# ejercicio_d = f_newton_raphson(param_f=f1d, param_x0=2.5, param_e=10e-4, param_msn=True)
+# print(ejercicio_d)
+
+# ejercicio_e = f_newton_raphson(param_f=f1e, param_x0=1, param_e=10e-4, param_msn=True)
+# print(ejercicio_e)
+
+# -- Ejercicio 2
+# f2 = 'sqrt(x)'
+# plot(f2)
+# ejercicio_e = f_newton_raphson(param_f=f2, param_x0=3, param_e=10e-3, param_msn=True)
+# print(ejercicio_e)
+
+# -- Ejercicio 3
+f3 = 'ln(x**2 + 1) - E**(0.4*x)*cos(pi*x)'
+plot(f3)
+
+ejercicio_3 = f_newton_raphson(param_f=f3, param_x0=-0.43, param_e=10e-6, param_msn=True)
+print(ejercicio_3)
+print(float(ejercicio_3['error']))
