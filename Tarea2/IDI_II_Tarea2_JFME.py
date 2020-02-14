@@ -8,7 +8,6 @@
 import time
 import sympy as sp
 from sympy.plotting import plot
-from math import *
 
 
 # -- ------------------------------------------------------------ FUNCION: Newton-Raphson -- #
@@ -30,13 +29,17 @@ def f_newton_raphson(param_f, param_x0, param_e):
     Debugging
     ---------
     # Funcion para aproximar
-    param_f = x ** 3 - 2 * x ** 2 - 5
+    param_f = 'x ** 3 - 2 * x ** 2 - 5'
     # Valor inicial
     param_x0 = 1.0
     # Cota de error
     param_e = 10e-4
 
     """
+    # Declarar cual sera la variable simbolica
+    x = sp.Symbol('x')
+    # Declarar la expresion
+    param_f = sp.S(param_f)
 
     # Inicializar epislon en error
     epsilon = 1
@@ -54,7 +57,7 @@ def f_newton_raphson(param_f, param_x0, param_e):
             xn = x0 - param_f.subs(x, x0) / sp.diff(param_f, x).subs(x, x0)
         # Rompe el ciclo si "cacha" el error de division entre 0
         except ZeroDivisionError:
-            print("La derivada de la funcion dio 0. El calculo está indeterminado")
+            print("La derivada de la funcion evaluada en x0 dio 0.")
             # Activar bandera de error para que pare ciclo
             raise
         # Ultimo error calculado en metodo
@@ -65,28 +68,32 @@ def f_newton_raphson(param_f, param_x0, param_e):
         x0 = xn
 
     # Tiempo total transcurrido utilizando la funcion
-    tiempo = time.time() - inicia
+    tiempo = round(time.time() - inicia, 4)
 
     # Grafica
-    grafica = plot(fa)
+    grafica = param_f
 
-    print('el valor aproximado es: ' + str(xn))
-    print('el valor del error epsilon es: ' + str(epsilon))
-
-    return {'iteraciones': iteraciones, 'tiempo': tiempo, 'error': epsilon, 'valor': xn,
-            'grafica': grafica}
+    return {'iteraciones': iteraciones, 'tiempo': tiempo, 'error': epsilon,
+            'valor_aprox': x0, 'grafica': grafica}
 
 
-x = sp.symbols('x')
-fa = x**3 - 2*x**2 - 5
-d_fa = sp.diff(fa, x).subs(x, 0.1)
+fa = 'x**3 - 2*x**2 - 5'
+fb = 'x - cos(x)'
+fc = 'x - 0.8 - 0.2*sin(x)'
+fd = 'log(x - 1) + cos(x-1)'
+fe = 'e**x - 3*x**2'
 
-# fb = x - cos(x)
-# fc = x - 0.8 - 0.2*sin(x)
-# fd = log(x - 1) + cos(x-1)
-# fe = e**x - 3*x**2
-
-ejercicio_a = f_newton_raphson(param_f=fa, param_x0=.1, param_e=10e-4)
+ejercicio_a = f_newton_raphson(param_f=fc, param_x0=.1, param_e=10e-4)
 print(ejercicio_a)
 
+ejercicio_b = f_newton_raphson(param_f=fb, param_x0=.1, param_e=10e-4)
+print(ejercicio_b)
 
+ejercicio_c = f_newton_raphson(param_f=fc, param_x0=.1, param_e=10e-4)
+print(ejercicio_c)
+
+ejercicio_d = f_newton_raphson(param_f=fd, param_x0=.1, param_e=10e-4)
+print(ejercicio_d)
+
+ejercicio_e = f_newton_raphson(param_f=fe, param_x0=.1, param_e=10e-4)
+print(ejercicio_e)
