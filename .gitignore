@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+Tarea2/.idea
 __pycache__/
 *.py[cod]
 *$py.class
