@@ -1,15 +1,13 @@
-
 # -- ------------------------------------------------------------------------------------ -- #
 # --
 # --
 # --
 # -- ------------------------------------------------------------------------------------ -- #
 
+import decimal
 import time
 import sympy as sp
 from sympy.plotting import plot
-import math
-from sympy import E, pi
 
 
 # -- ------------------------------------------------------------ FUNCION: Newton-Raphson -- #
@@ -46,7 +44,7 @@ def f_newton_raphson(param_f, param_x0, param_e, param_msn):
     param_f = sp.S(param_f)
 
     # Inicializar epislon en error
-    epsilon = .1
+    epsilon = 1
     # Para calculo de tiempo de ejecucion
     inicia = time.time()
     # Para guardar cantidad de interaciones realizadas
@@ -72,13 +70,13 @@ def f_newton_raphson(param_f, param_x0, param_e, param_msn):
         x0 = xn
         # Si param_msn == True, imprimir valores
         if param_msn:
-            print('iteracion: ' + str(iteraciones) + ' | ' + 'Valor Aprox: ' + str(x0))
+            print('iteracion: ' + str(iteraciones) + ' | ' + 'Valor Aprox: ' + str(float(x0)))
 
     # Tiempo total transcurrido utilizando la funcion
     tiempo = round(time.time() - inicia, 4)
 
-    return {'iteraciones': iteraciones, 'tiempo': tiempo, 'error': epsilon,
-            'valor_aprox': x0}
+    return {'iteraciones': iteraciones, 'tiempo': tiempo, 'error': float(epsilon),
+            'valor_aprox': float(x0)}
 
 
 # -- Plots
@@ -90,7 +88,7 @@ f1a = 'x**3 - 2*x**2 - 5'
 f1b = 'x - cos(x)'
 f1c = 'x - 0.8 - 0.2*sin(x)'
 f1d = 'log(x - 1) + cos(x-1)'
-f1e = 'E**x - 3*x**2'
+f1e = 'exp(x) - 3*x**2'
 
 # ejercicio_a = f_newton_raphson(param_f=f1a, param_x0=.1, param_e=10e-4, param_msn=True)
 # print(ejercicio_a)
@@ -108,10 +106,18 @@ f1e = 'E**x - 3*x**2'
 # print(ejercicio_e)
 
 # -- Ejercicio 2
-# f2 = 'sqrt(x)'
-# plot(f2)
-# ejercicio_e = f_newton_raphson(param_f=f2, param_x0=3, param_e=10e-3, param_msn=True)
-# print(ejercicio_e)
+f2 = 'x**(1/2)'
+plot(f2)
+
+# numero para encontrarle raiz
+num = 3
+
+# no parar hasta encontrar mas decimales que 1e-6
+while str(num)[::-1].find('.') < 5:
+    # formula simplificada de metodo
+    num = (num + float(num) / num) / 2  # update
+# imprimir numero
+print(num)
 
 # -- Ejercicio 3
 f3 = 'ln(x**2 + 1) - E**(0.4*x)*cos(pi*x)'
