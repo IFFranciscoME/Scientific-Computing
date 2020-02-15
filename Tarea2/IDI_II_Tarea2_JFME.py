@@ -1,10 +1,10 @@
+
 # -- ------------------------------------------------------------------------------------ -- #
 # --
 # --
 # --
 # -- ------------------------------------------------------------------------------------ -- #
 
-import decimal
 import time
 import sympy as sp
 from sympy.plotting import plot
@@ -56,6 +56,7 @@ def f_newton_raphson(param_f, param_x0, param_e, param_msn):
     while epsilon > param_e:
         # Intentar hacer division para "cachar" un error de division entre 0
         try:
+            print('prueba xn con nuevo x0 de: ' + str(x0))
             xn = x0 - param_f.subs(x, x0) / sp.diff(param_f, x).subs(x, x0)
         # Rompe el ciclo si "cacha" el error de division entre 0
         except ZeroDivisionError:
@@ -79,10 +80,6 @@ def f_newton_raphson(param_f, param_x0, param_e, param_msn):
             'valor_aprox': float(x0)}
 
 
-# -- Plots
-# x = sp.Symbol('x')
-# sp.plotting.plot3d(f2, (x, 1.7, 1.75))
-
 # -- Ejercicio 1
 f1a = 'x**3 - 2*x**2 - 5'
 f1b = 'x - cos(x)'
@@ -90,20 +87,33 @@ f1c = 'x - 0.8 - 0.2*sin(x)'
 f1d = 'log(x - 1) + cos(x-1)'
 f1e = 'exp(x) - 3*x**2'
 
-# ejercicio_a = f_newton_raphson(param_f=f1a, param_x0=.1, param_e=10e-4, param_msn=True)
-# print(ejercicio_a)
+plot(f1a)
+ejercicio_a = f_newton_raphson(param_f=f1a, param_x0=0.1, param_e=10e-4, param_msn=True)
+print('tiempo que tardo: ' + str(ejercicio_a['tiempo']) + ' segundos')
+# empece en 0
+# cambie a 0.1
 
-# ejercicio_b = f_newton_raphson(param_f=f1b, param_x0=.1, param_e=10e-4, param_msn=True)
-# print(ejercicio_b)
+plot(f1b)
+ejercicio_b = f_newton_raphson(param_f=f1b, param_x0=1, param_e=10e-4, param_msn=True)
+print('tiempo que tardo: ' + str(ejercicio_b['tiempo']) + ' segundos')
+# empece en 1
 
-# ejercicio_c = f_newton_raphson(param_f=f1c, param_x0=2, param_e=10e-4, param_msn=True)
-# print(ejercicio_c)
+plot(f1c)
+ejercicio_c = f_newton_raphson(param_f=f1c, param_x0=1, param_e=10e-4, param_msn=True)
+print('tiempo que tardo: ' + str(ejercicio_c['tiempo']) + ' segundos')
+# empece en 1
 
-# ejercicio_d = f_newton_raphson(param_f=f1d, param_x0=2.5, param_e=10e-4, param_msn=True)
-# print(ejercicio_d)
+plot(f1d)
+ejercicio_d = f_newton_raphson(param_f=f1d, param_x0=1.2, param_e=10e-4, param_msn=True)
+print('tiempo que tardo: ' + str(ejercicio_d['tiempo']) + ' segundos')
+# empece en 2.5
+# cambie a 2
+# cambie a 1.2
 
-# ejercicio_e = f_newton_raphson(param_f=f1e, param_x0=1, param_e=10e-4, param_msn=True)
-# print(ejercicio_e)
+plot(f1e)
+ejercicio_e = f_newton_raphson(param_f=f1e, param_x0=1, param_e=10e-4, param_msn=True)
+print('tiempo que tardo: ' + str(ejercicio_e['tiempo']) + ' segundos')
+# empece en 1
 
 # -- Ejercicio 2
 f2 = 'x**(1/2)'
@@ -111,18 +121,23 @@ plot(f2)
 
 # numero para encontrarle raiz
 num = 3
+a = float(num)
 
 # no parar hasta encontrar mas decimales que 1e-6
-while str(num)[::-1].find('.') < 5:
+while str(num)[::-1].find('.') < 6:
     # formula simplificada de metodo
-    num = (num + float(num) / num) / 2  # update
+    num = (num + a / num) * 0.5  # update
 # imprimir numero
 print(num)
 
 # -- Ejercicio 3
-f3 = 'ln(x**2 + 1) - E**(0.4*x)*cos(pi*x)'
+f3 = 'ln(x**2 + 1) - exp(0.4*x)*cos(pi*x)'
 plot(f3)
 
-ejercicio_3 = f_newton_raphson(param_f=f3, param_x0=-0.43, param_e=10e-6, param_msn=True)
-print(ejercicio_3)
-print(float(ejercicio_3['error']))
+ejercicio_3 = f_newton_raphson(param_f=f3, param_x0=-0.4350, param_e=10e-6, param_msn=True)
+print('tiempo que tardo: ' + str(ejercicio_3['tiempo']) + ' segundos')
+# empece en -1
+# cambie a -.43
+# cambie a -.425
+# cambie a -.4350
+
