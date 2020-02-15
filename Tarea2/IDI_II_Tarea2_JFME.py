@@ -1,8 +1,8 @@
 
 # -- ------------------------------------------------------------------------------------ -- #
-# --
-# --
-# --
+# -- proyecto: IDI-II
+# -- codigo: IDI_II_Tarea2_JFME.py
+# -- repositorio: https://github.com/IFFranciscoME/IDI_II_GIT
 # -- ------------------------------------------------------------------------------------ -- #
 
 import time
@@ -38,6 +38,7 @@ def f_newton_raphson(param_f, param_x0, param_e, param_msn):
     param_e = 10e-4
 
     """
+
     # Declarar cual sera la variable simbolica
     x = sp.Symbol('x')
     # Declarar la expresion
@@ -57,7 +58,7 @@ def f_newton_raphson(param_f, param_x0, param_e, param_msn):
         # Intentar hacer division para "cachar" un error de division entre 0
         try:
             print('prueba xn con nuevo x0 de: ' + str(x0))
-            xn = x0 - param_f.subs(x, x0) / sp.diff(param_f, x).subs(x, x0)
+            xn = x0 - float(param_f.subs(x, x0) / sp.diff(param_f, x).subs(x, x0))
         # Rompe el ciclo si "cacha" el error de division entre 0
         except ZeroDivisionError:
             print("La derivada de la funcion evaluada en x0 dio 0.")
@@ -68,10 +69,12 @@ def f_newton_raphson(param_f, param_x0, param_e, param_msn):
         # Iteraciones que se llevan
         iteraciones += 1
         # Actualizar el valor
-        x0 = xn
+        x0 = abs(xn)
         # Si param_msn == True, imprimir valores
         if param_msn:
-            print('iteracion: ' + str(iteraciones) + ' | ' + 'Valor Aprox: ' + str(float(x0)))
+            print('iter: ' + str(iteraciones) + ' | ' +
+                  'val_aprox: ' + str(float(x0)) + ' | ' +
+                  'error_aprox: ' + str(epsilon))
 
     # Tiempo total transcurrido utilizando la funcion
     tiempo = round(time.time() - inicia, 4)
@@ -103,12 +106,21 @@ ejercicio_c = f_newton_raphson(param_f=f1c, param_x0=1, param_e=10e-4, param_msn
 print('tiempo que tardo: ' + str(ejercicio_c['tiempo']) + ' segundos')
 # empece en 1
 
-plot(f1d)
-ejercicio_d = f_newton_raphson(param_f=f1d, param_x0=1.2, param_e=10e-4, param_msn=True)
+plot(f1d, xlim=(0, 11), ylim=(-10, 10))
+ejercicio_d = f_newton_raphson(param_f=f1d, param_x0=1.1, param_e=10e-4, param_msn=True)
 print('tiempo que tardo: ' + str(ejercicio_d['tiempo']) + ' segundos')
 # empece en 2.5
 # cambie a 2
-# cambie a 1.2
+# cambie a 1.1
+
+ejercicio_d = f_newton_raphson(param_f=f1d, param_x0=10000, param_e=10e-4, param_msn=True)
+print('tiempo que tardo: ' + str(ejercicio_d['tiempo']) + ' segundos')
+# empece en 10
+# cambie a 11 - Ciclo infinito
+# cambie a 100 - Ciclo infinito
+# cambie a 1000 - uno encontrado: 16652
+# cambie a 10000 - uno encontrado: 9983
+# cambie a 30000 - uno encontrado: 30147
 
 plot(f1e)
 ejercicio_e = f_newton_raphson(param_f=f1e, param_x0=1, param_e=10e-4, param_msn=True)
@@ -140,4 +152,3 @@ print('tiempo que tardo: ' + str(ejercicio_3['tiempo']) + ' segundos')
 # cambie a -.43
 # cambie a -.425
 # cambie a -.4350
-
