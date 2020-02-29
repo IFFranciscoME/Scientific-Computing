@@ -7,21 +7,7 @@
 
 import sympy as sp
 from sympy import symbols, N
-# from sympy.plotting import plot3d, plot
-
-# Declarar x, y, z como variables simbolicas
-x, y, z = symbols('x y z')
-# Declarar funcion
-f_1 = 'x**4 - 3*x**3 + 2'
-f_2 = 'x**2 - 24*y + y**2 -10*y'
-f_3 = 'sy.sin((1/2)*x**2 - (1/4)*y**2 + 3)*sy.cos(2*x + 1 - sy.exp(y))'
-
-# Establecer que es una expresion con variable simbolica
-# f_n = sp.S(f_1)
-# Graficar la funcion para explorar dominio
-# plot(f_1, (x, -4, +4))
-# Derivada parcial de funcion respecto a x
-# f_n.diff(x)
+from sympy.plotting import plot3d, plot
 
 
 # -- ---------------------------------------- FUNCION: Gradiente Descendente (Ascendente) -- #
@@ -87,5 +73,36 @@ def f_grad(param_fun, param_x, param_y, param_e, param_p):
     print("el número de interaciones fueron: ", iteraciones, sep=" ")
     print('el error es: ' + str(abs(temp_x - param_x)))
 
+
+# Declarar x, y, z como variables simbolicas
+x, y, z = symbols('x y z')
+
+# Funcion 1
+f_1 = 'x**4 - 3*x**3 + 2'
+# Establecer que es una expresion con variable simbolica
+f_n = sp.S(f_1)
+# Graficar la funcion para explorar dominio
+plot(f_1, (x, -2, +4))
+# Evaluar funcion de gradiente descendente
+f_grad(param_fun=0, param_x=0, param_y=0, param_e=0, param_p=0)
+
+# -- Notas de ejercicio
 # grafique, puse x0=-2, con theta = 0.5, resultado fue que mando a x=32
 
+# Funcion 2
+f_2 = 'x**2 - 24*y + y**2 -10*y'
+# Establecer que es una expresion con variable simbolica
+f_2 = sp.S(f_2)
+# Graficar la funcion para explorar dominio
+plot3d(f_2, (x, -4, +4), (y, -4, +4))
+# Evaluar funcion de gradiente descendente
+f_grad(param_fun=f_2, param_x=1, param_y=-3, param_e=10e-3, param_p=4)
+
+# Funcion 3
+f_3 = 'sin((1/2)*x**2 - (1/4)*y**2 + 3)*cos(2*x + 1 - exp(y))'
+# Establecer que es una expresion con variable simbolica
+f_3 = sp.S(f_3)
+# Graficar la funcion para explorar dominio
+plot3d(f_3, (x, -4, +4), (y, -4, +4))
+# Evaluar funcion de gradiente descendente
+f_grad(param_fun=f_3, param_x=1, param_y=-3, param_e=10e-3, param_p=4)
