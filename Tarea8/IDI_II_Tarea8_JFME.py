@@ -51,31 +51,37 @@ def funcion_activacion(param_f, param_x, param_alfa):
         print('funcion no reconocida')
 
 
-# -- PARAMETROS FIJOS
+# -- PARAMETROS INICIALES
 # matriz de pesos de entrada
 w_h = np.array(np.random.random_sample(size=[params[1], params[0]]))
 # matriz de pesos de salida
 w_o = np.array(np.random.random_sample(size=[params[2], params[1]]))
 
-# -- PARAMETRO A ITERAR
-# vector de N entradas
-x_j = datos_train_x[0, :][np.newaxis, :]
+# -- -------------------------------------------------------------------------- ITERACION -- #
 
-# -- FORWARD
-# red de la capa oculta
-net_h = w_h.dot(x_j.T)
-# salidas de capa oculta
-y_h = funcion_activacion(param_f='sigmoid', param_x=net_h, param_alfa=params[3])
-# red de capa de salida
-net_o = w_o.dot(y_h)
-# salida
-y = funcion_activacion(param_f='sigmoid', param_x=net_o, param_alfa=params[3])
+error = 1
+while error > 0.01:
+    for q in range(len(datos_train_x)):
+        print('iteracion: ' + str(q))
+        # vector Q de N entradas
+        x_j = datos_train_x[q, :][np.newaxis, :]
 
-# -- BACKWARD
-delta_o = np.multiply((datos_train_d[0][np.newaxis, :].T - y), np.multiply(y, (1-y)))
-delta_h = np.multiply(np.multiply(y_h, (1-y_h)), w_o.T.dot(delta_o))
+        # -- FORWARD
+        # red de la capa oculta
+        net_h = w_h.dot(x_j.T)
+        # salidas de capa oculta
+        y_h = funcion_activacion(param_f='sigmoid', param_x=net_h, param_alfa=params[3])
+        # red de capa de salida
+        net_o = w_o.dot(y_h)
+        # salida
+        y = funcion_activacion(param_f='sigmoid', param_x=net_o, param_alfa=params[3])
 
-delta_w_o = (params[3]*delta_o).dot(y_h.T)
-delta_w_h = (params[3]*delta_h).dot(x_j)
+        # -- BACKWARD
+        delta_o = np.multiply((datos_train_d[q][np.newaxis, :].T - y), np.multiply(y, (1-y)))
+        delta_h = np.multiply(np.multiply(y_h, (1-y_h)), w_o.T.dot(delta_o))
 
-error = delta_o
+        delta_w_o = (params[3]*delta_o).dot(y_h.T)
+        delta_w_h = (params[3]*delta_h).dot(x_j)
+
+        error = abs(sum(delta_o))
+        print('da un error de: ' + str(error))
