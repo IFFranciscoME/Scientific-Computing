@@ -34,7 +34,7 @@ datos_d_train = datos_train[:, -1:]
 
 # -- PERCEPTRON MULTICAPA
 # [Entradas, Neuronas Ocultas, Salidas, Alfa, Error]
-params = [3, 8, 1, 0.75, 1e-16]
+params = [3, 6, 1, 0.55, 1e-12]
 
 
 # ------------------------------------------------------------------------------- Proceso -- #
@@ -74,11 +74,11 @@ w_o_ini = w_o
 # -- ------------------------------------------------------- ITERACIONES DE ENTRENAMIENTO -- #
 
 error = 1
-salidas = list()
 # entrenar hasta lograr pasar un error objetivo
 while error > params[4]:
     print(' ------------ CICLO WHILE ------------ ')
     # ciclo para las q observaciones de entrenamiento
+    salidas = list()
     for q in range(len(datos_x_train)):
         # q = 0
         # print(' **** iteracion (Q): ' + str(q) + ' **** ')
@@ -107,13 +107,14 @@ while error > params[4]:
         delta_w_h = (params[3]*delta_h).dot(x_j)
 
         # calculo de la cota de error
-        error = abs(sum(delta_o))
+        error = sum(abs(delta_o))
 
         # actualizacion de pesos para capa oculta
         w_h = w_h + delta_w_h
         # actualizacion de pesos para capa de salida
         w_o = w_o + delta_w_o
         # verificacion de error
+
     print('El error es: ' + str(error))
 
 print(' ----- ENTRENAMIENTO terminado -----')
