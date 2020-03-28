@@ -60,7 +60,7 @@ w_o = np.array(np.random.random_sample(size=[params[2], params[1]]))
 # -- -------------------------------------------------------------------------- ITERACION -- #
 
 error = 1
-while error > 0.01:
+while error > 0.00001:
     for q in range(len(datos_train_x)):
         print('iteracion: ' + str(q))
         # vector Q de N entradas
@@ -84,4 +84,9 @@ while error > 0.01:
         delta_w_h = (params[3]*delta_h).dot(x_j)
 
         error = abs(sum(delta_o))
+
+        w_h = w_h + delta_w_h
+        w_o = w_o + delta_w_o
         print('da un error de: ' + str(error))
+
+print('salio del while')
