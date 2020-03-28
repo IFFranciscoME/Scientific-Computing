@@ -17,8 +17,13 @@ datos_test.reset_index(inplace=True, drop=True)
 datos_train = datos[(datos['d1'] != '?') | (datos['d2'] != '?')]
 datos_train.reset_index(inplace=True, drop=True)
 
-datos_train_x = np.array(datos_train.iloc[:, 0:-2], dtype=int)
-datos_train_d = np.array(datos_train.iloc[:, -2:], dtype=int)
+# -- Entrenamiento
+datos_x = np.array(datos_train.iloc[:, 0:-2], dtype=int)
+datos_d = np.array(datos_train.iloc[:, -2:], dtype=int)
+
+# -- Prueba
+# datos_x = np.array(datos_test.iloc[:, 0:-2], dtype=int)
+# datos_d = np.array(datos_test.iloc[:, -2:], dtype=int)
 
 # -- PERCEPTRON MULTICAPA
 # [Entradas, Neuronas Ocultas, Salidas, Alfa]
@@ -60,11 +65,15 @@ w_o = np.array(np.random.random_sample(size=[params[2], params[1]]))
 # -- -------------------------------------------------------------------------- ITERACION -- #
 
 error = 1
-while error > 0.00001:
-    for q in range(len(datos_train_x)):
-        print('iteracion: ' + str(q))
+# entrenar hasta lograr pasar un error objetivo
+while error > 1e-5:
+    # ciclo para las q observaciones de entrenamiento
+    print(' ----- Entrenamiento terminado -----')
+    for q in range(len(datos_x)):
+        print('iteracion (Q): ' + str(q))
+
         # vector Q de N entradas
-        x_j = datos_train_x[q, :][np.newaxis, :]
+        x_j = datos_x[q, :][np.newaxis, :]
 
         # -- FORWARD
         # red de la capa oculta
@@ -75,18 +84,33 @@ while error > 0.00001:
         net_o = w_o.dot(y_h)
         # salida
         y = funcion_activacion(param_f='sigmoid', param_x=net_o, param_alfa=params[3])
+        # print(y.T)
+        print('d1 = ' + str(round(y[0][0], 2)) + ' | d2 = ' + str(round(y[1][0], 2)))
 
         # -- BACKWARD
-        delta_o = np.multiply((datos_train_d[q][np.newaxis, :].T - y), np.multiply(y, (1-y)))
+        # errores de la capa de salida
+        delta_o = np.multiply((datos_d[q][np.newaxis, :].T - y), np.multiply(y, (1-y)))
+        # errores de la capa oculta
         delta_h = np.multiply(np.multiply(y_h, (1-y_h)), w_o.T.dot(delta_o))
-
+        # correcciones para pesos de capa de salida
         delta_w_o = (params[3]*delta_o).dot(y_h.T)
+        # correcciones para pesos de capa oculta
         delta_w_h = (params[3]*delta_h).dot(x_j)
 
+        # calculo de la cota de error
         error = abs(sum(delta_o))
 
+        # actualizacion de pesos para capa oculta
         w_h = w_h + delta_w_h
+        # actualizacion de pesos para capa de salida
         w_o = w_o + delta_w_o
-        print('da un error de: ' + str(error))
+        # verificacion de error
+    print('da un error de: ' + str(error))
 
-print('salio del while')
+print('Termino entrenamiento')
+print('los pesos en capa oculta quedaron: ')
+print(w_h)
+print('los pesos en capa de salida quedaron: ')
+print(w_o)
+
+
