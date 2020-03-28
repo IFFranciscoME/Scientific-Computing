@@ -21,10 +21,6 @@ datos_train.reset_index(inplace=True, drop=True)
 datos_x = np.array(datos_train.iloc[:, 0:-2], dtype=int)
 datos_d = np.array(datos_train.iloc[:, -2:], dtype=int)
 
-# -- Prueba
-# datos_x = np.array(datos_test.iloc[:, 0:-2], dtype=int)
-# datos_d = np.array(datos_test.iloc[:, -2:], dtype=int)
-
 # -- PERCEPTRON MULTICAPA
 # [Entradas, Neuronas Ocultas, Salidas, Alfa]
 params = [4, 8, 2, 2.5]
@@ -59,14 +55,16 @@ def funcion_activacion(param_f, param_x, param_alfa):
 # -- PARAMETROS INICIALES
 # matriz de pesos de entrada
 w_h = np.array(np.random.random_sample(size=[params[1], params[0]]))
+w_h_ini = w_h
 # matriz de pesos de salida
 w_o = np.array(np.random.random_sample(size=[params[2], params[1]]))
+w_o_ini = w_o
 
-# -- -------------------------------------------------------------------------- ITERACION -- #
+# -- ------------------------------------------------------- ITERACIONES DE ENTRENAMIENTO -- #
 
 error = 1
 # entrenar hasta lograr pasar un error objetivo
-while error > 1e-5:
+while error > 1e-6:
     # ciclo para las q observaciones de entrenamiento
     print(' ----- Entrenamiento terminado -----')
     for q in range(len(datos_x)):
@@ -113,4 +111,37 @@ print(w_h)
 print('los pesos en capa de salida quedaron: ')
 print(w_o)
 
+# -- ------------------------------------------------------------- PREDICCION CON PRUEBAS -- #
 
+# -- Prueba
+datos_x = np.array(datos_test.iloc[:, 0:-2], dtype=int)
+# datos_d = np.array(datos_test.iloc[:, -2:], dtype=int)
+
+for q in range(len(datos_x)):
+    # vector Q de N entradas
+    x_j = datos_x[q, :][np.newaxis, :]
+
+    # -- FORWARD
+    # red de la capa oculta
+    net_h = w_h.dot(x_j.T)
+    # salidas de capa oculta
+    y_h = funcion_activacion(param_f='sigmoid', param_x=net_h, param_alfa=params[3])
+    # red de capa de salida
+    net_o = w_o.dot(y_h)
+    # salida
+    y = funcion_activacion(param_f='sigmoid', param_x=net_o, param_alfa=params[3])
+    # print(y.T)
+    print('d1 = ' + str(round(y[0][0], 2)) + ' | d2 = ' + str(round(y[1][0], 2)))
+
+    # -- BACKWARD
+    # errores de la capa de salida
+    delta_o = np.multiply((datos_d[q][np.newaxis, :].T - y), np.multiply(y, (1-y)))
+    # errores de la capa oculta
+    delta_h = np.multiply(np.multiply(y_h, (1-y_h)), w_o.T.dot(delta_o))
+    # correcciones para pesos de capa de salida
+    delta_w_o = (params[3]*delta_o).dot(y_h.T)
+    # correcciones para pesos de capa oculta
+    delta_w_h = (params[3]*delta_h).dot(x_j)
+
+    # calculo de la cota de error
+    error = abs(sum(delta_o))
