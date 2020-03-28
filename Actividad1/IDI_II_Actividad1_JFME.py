@@ -34,16 +34,7 @@ datos_d_train = datos_train[:, -1:]
 
 # -- PERCEPTRON MULTICAPA
 # [Entradas, Neuronas Ocultas, Salidas, Alfa, Error]
-params = [3, 10, 1, 0.85, 1e-15]
-
-# params = [3, 10, 1, 0.65, 1e-12] 0.81
-# params = [3, 10, 1, 0.85, 1e-12] 0.8157
-# params = [3, 10, 1, 0.85, 1e-14] 0.8142
-
-# params = [3, 8, 1, 0.65, 1e-13] 0.81
-# params = [3, 8, 1, 0.70, 1e-13] 0.8145
-# params = [3, 8, 1, 0.75, 1e-13] 0.8185
-# params = [3, 8, 1, 0.95, 1e-13] 0.81
+params = [3, 8, 1, 0.75, 1e-16]
 
 
 # ------------------------------------------------------------------------------- Proceso -- #
