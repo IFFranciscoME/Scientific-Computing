@@ -32,6 +32,9 @@ datos_test, datos_train = train_test_split(datos, test_size=0.7, shuffle=False)
 datos_x_train = datos_train[:, 0:-1]
 datos_d_train = datos_train[:, -1:]
 
+datos_x_test = datos_test[:, 0:-1]
+datos_d_test = datos_test[:, -1:]
+
 # -- PERCEPTRON MULTICAPA
 # [Entradas, Neuronas Ocultas, Salidas, Alfa, Error]
 params = [3, 6, 1, 0.55, 1e-12]
@@ -128,4 +131,36 @@ cm = confusion_matrix(salidas_y, salidas_y_hat)
 # [ 0-1, 0-0]
 
 aciertos = (cm[0][0] + cm[1][1])/len(datos_d_train)
+print(comparacion)
+print(aciertos)
+
+# -- ----------------------------------------------------------------------------- PRUEBA -- #
+
+print(' ----- PRUEBA iniciada -----')
+salidas_test = list()
+for q in range(len(datos_x_test)):
+    # vector Q de N entradas
+    x_j = datos_x_test[q, :][np.newaxis, :]
+
+    # -- FORWARD
+    # red de la capa oculta
+    net_h = w_h.dot(x_j.T)
+    # salidas de capa oculta
+    y_h = funcion_activacion(param_f='sigmoid', param_x=net_h, param_alfa=params[3])
+    # red de capa de salida
+    net_o = w_o.dot(y_h)
+    # salida
+    y = funcion_activacion(param_f='sigmoid', param_x=net_o, param_alfa=params[3])
+    salidas_test.append(y)
+
+salidas_test = [salidas_test[i][0][0] for i in range(0, len(salidas_test))]
+salidas_y_hat = [1 if salidas_test[i] >= 0.50 else 0 for i in range(0, len(datos_d_test))]
+comparacion = pd.DataFrame({'y': salidas_y, 'y_hat': salidas_y_hat})
+cm = confusion_matrix(salidas_y, salidas_y_hat)
+
+# [ 1-1, 1-0]
+# [ 0-1, 0-0]
+
+aciertos = (cm[0][0] + cm[1][1])/len(datos_d_test)
+print(comparacion)
 print(aciertos)
