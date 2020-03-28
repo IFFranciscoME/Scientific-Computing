@@ -1,0 +1,3 @@
+
+# Hubo una correccion en el pdf, en el termino delta_h se cambio
+# el orden correcto es (w_o.T delta_o)
