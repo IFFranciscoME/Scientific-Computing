@@ -1,0 +1,40 @@
+
+En la tabla adjunta se muestran los datos de 1000 clientes que solicitaron créditos a
+un banco dado. La última columna muestra la información de los clientes que cayeron en
+mora en algún momento del período del crédito. El monto máximo de crédito que puede
+asignarse son $300,000 y la antigüedad laboral máxima que se toma en cuenta para asignar
+el crédito es de 15 años (es decir, antigüedades mayores ya no generan más posibilidad
+de ser aprobado).
+
+Se busca una relación entre la información presentada (que se obtiene al contratar el
+crédito) y la posibilidad de que el cliente caiga en mora en algún momento del plazo.
+
+Entrene un perceptrón multicapa para encontrar una relación tomando como entradas el
+monto solicitado (normalizado), la carga que impl
+
+ica al salario el pago de la mensualidad
+y la antigüedad laboral al contratar (normalizada).
+
+Utilice 70-30 de relación entrenamiento-prueba.
+
+El número de neuronas ocultas es a su criterio.
+
+# -- respuestas hasta lo encontrad
+
+Pesos de capa oculta
+array([[  3.96216564,  -9.31654884,  -6.69290978],
+       [ -1.20496045,  -4.99268771,  -3.36083253],
+       [ -6.74456618,  10.52665636,   7.96241415],
+       [ -1.80386476,   6.36382025,   4.57943887],
+       [  0.9013294 ,  -6.80827578,  -4.71053827],
+       [  2.00108593,  -7.67372933,  -5.42850064],
+       [ -0.61369425,   5.25892339,   3.76496885],
+       [ -2.56980373,  -3.68693995,  -2.51337166],
+       [ -2.20877145,  -3.88448143,  -2.77951869],
+       [  6.15397878, -11.19943134,  -8.0973295 ]])
+
+Pesos de salida
+array([[ 20.74648628,  13.40766384, -12.85784812,  -7.45131571,
+         17.25281811,  18.50206181,  -6.04197411,  10.44656807,
+         10.7771067 ,  22.90853325]])
+
