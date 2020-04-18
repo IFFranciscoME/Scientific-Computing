@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 .idea/
+Tarea_9_Kmeans/venv/
 
 __pycache__/
 *.py[cod]
