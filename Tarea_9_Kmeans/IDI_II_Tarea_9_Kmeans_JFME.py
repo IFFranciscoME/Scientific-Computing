@@ -15,6 +15,7 @@ de acuerdo a la clasificación obtenida anteriormente.
 """
 
 import numpy as np
+import random
 import os
 import pandas as pd
 
@@ -27,3 +28,20 @@ df_datos['x'] = df_datos['x']/max(df_datos['x'])
 df_datos['y'] = df_datos['y']/max(df_datos['y'])
 datos = np.array([list(df_datos['x']), list(df_datos['y'])]).T
 # ------------------------------------------------------------------------------------------ #
+
+param_iter = 100
+param_k = 3
+
+# ------------------------------------------------------------------------------------------ #
+# dimensiones
+m = datos.shape[0]
+n = datos.shape[1]
+# objeto vacio para almacenar n cantidad de centroides
+centroides = np.array([]).reshape(n, 0)
+# objeto vacio para guardar todos los resultados de las iteraciones
+k_means_data = dict()
+# ------------------------------------------------------------------------------------------ #
+
+# crear una param_k cantidad de centroides aleatorios
+for _ in range(param_k):
+    centroides = np.c_[centroides, datos[random.randint(0, m - 1)]]
