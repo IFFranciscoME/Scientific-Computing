@@ -1,0 +1,6 @@
+# Requerimientos para el proyecto
+
+pandas
+numpy
+sklearn
+matplotlib
