@@ -15,7 +15,15 @@ de acuerdo a la clasificación obtenida anteriormente.
 """
 
 import numpy as np
-import random
 import os
 import pandas as pd
-import matplotlib.pyplot as plt
+
+# ------------------------------------------------------------------------------------------ #
+directorio = os.getcwd()
+df_datos = pd.read_csv(directorio + '/Tarea_9_Kmeans/archivos/' + 'datos.csv')
+
+# normalizar datos
+df_datos['x'] = df_datos['x']/max(df_datos['x'])
+df_datos['y'] = df_datos['y']/max(df_datos['y'])
+datos = np.array([list(df_datos['x']), list(df_datos['y'])]).T
+# ------------------------------------------------------------------------------------------ #
