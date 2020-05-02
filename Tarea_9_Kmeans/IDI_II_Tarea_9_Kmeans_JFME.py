@@ -65,4 +65,3 @@ rango_y = np.arange(min(y), max(y))
 # criterio de paro es que las clases no cambian
 
 # -- PASO 7: Finalizar si hay criterio de paro o repetir si no lo hubo
-
