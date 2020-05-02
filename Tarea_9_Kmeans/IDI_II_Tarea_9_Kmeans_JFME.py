@@ -18,6 +18,7 @@ import numpy as np
 import random
 import os
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # ------------------------------------------------------------------------------------------ #
 directorio = os.getcwd()
@@ -45,3 +46,48 @@ k_means_data = dict()
 # crear una param_k cantidad de centroides aleatorios
 for _ in range(param_k):
     centroides = np.c_[centroides, datos[random.randint(0, m - 1)]]
+
+# ------------------------------------------------------------------------------------------ #
+# ciclo de busqueda
+for i in range(param_iter):
+    # objeto con distancias euclidianas
+    euclidianas = np.array([]).reshape(m, 0)
+
+    # para cada centroide calcular las distancias a cada punto
+    for k in range(param_k):
+        # distancia euclidiana de cada punto con cada centroide
+        distancias = np.sum((datos-centroides[:, k])**2, axis=1)
+        # concatenar para cada punto sus distancias con cada centroide
+        euclidianas = np.c_[euclidianas, distancias]
+
+    # encontrar indice de columna con la distancia minima de cada punto a cada centroide
+    cent_ind = np.argmin(euclidianas, axis=1) + 1
+    cent_data = {}
+
+    # una lista de arrays, uno para cada centroide
+    for lista in range(param_k):
+        cent_data[lista + 1] = np.array([]).reshape(n, 0)
+
+    # asociar datos a su centroide y concatenar todos los centroides
+    for con in range(m):
+        cent_data[cent_ind[con]] = np.c_[cent_data[cent_ind[con]], datos[con]]
+
+    # reacomodo de datos y parametro de k-mean
+    for dato in range(param_k):
+        # dar formato a arrays de datos en centroides
+        cent_data[dato + 1] = cent_data[dato + 1].T
+        # calcular el promedio de distancias de datos al centroide para cada centroide
+        centroides[:, dato] = np.mean(cent_data[dato + 1], axis=0)
+
+    # Dejar resultados finales en un diccionario
+    k_means_data.update(cent_data)
+# ------------------------------------------------------------------------------------------ #
+
+# codigo para visualizacion
+colores = ['blue', 'red', 'green', 'brown', 'black']
+[plt.scatter(k_means_data[i + 1][:, 0], k_means_data[i + 1][:, 1], color=colores[i])
+ for i in range(param_k)]
+plt.scatter(centroides[0, :], centroides[1, :], s=200, c='grey')
+plt.scatter(centroides[0, :], centroides[1, :], s=100, c='white')
+plt.title('Datos a clasificar')
+plt.show()
