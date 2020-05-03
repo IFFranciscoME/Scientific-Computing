@@ -23,10 +23,6 @@ import matplotlib.pyplot as plt
 # ------------------------------------------------------------------------------------------ #
 directorio = os.getcwd()
 df_datos = pd.read_csv(directorio + '/Tarea_9_Kmeans/archivos/' + 'datos.csv')
-
-# normalizar datos
-df_datos['x'] = df_datos['x']/max(df_datos['x'])
-df_datos['y'] = df_datos['y']/max(df_datos['y'])
 datos = np.array([list(df_datos['x']), list(df_datos['y'])]).T
 # ------------------------------------------------------------------------------------------ #
 
@@ -91,3 +87,22 @@ plt.scatter(centroides[0, :], centroides[1, :], s=200, c='grey')
 plt.scatter(centroides[0, :], centroides[1, :], s=100, c='white')
 plt.title('Datos a clasificar')
 plt.show()
+
+# ------------------------------------------------------------------------------------------ #
+# Dato nuevo para clasificar
+dato_nuevo = np.array([[60], [250]])
+
+# calcular distancias
+euclidianas = np.array([]).reshape(len(dato_nuevo), 0)
+
+for k in range(param_k):
+    distancias = np.sum((dato_nuevo - centroides[:, k])**2, axis=1)
+    # concatenar para cada punto sus distancias con cada centroide
+    euclidianas = np.c_[euclidianas, distancias]
+
+cent_ind = np.argmin(euclidianas, axis=1) + 1
+
+# respuesta de texto final
+print('el nuevo dato: ' + '[' + str(dato_nuevo[0][0]) + ', ' + str(dato_nuevo[1][0]) + '], ' +
+      ' pertenece al centroide: ' + str(cent_ind[0]) + ', el que es de color: ' +
+      colores[cent_ind[0] - 1])
