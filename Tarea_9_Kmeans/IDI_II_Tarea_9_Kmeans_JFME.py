@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 
 # para correr en mi compu uso estas lineas
 directorio = os.getcwd()
-df_datos = pd.read_csv(directorio + '/Tarea_9_Kmeans/archivos/' + 'datos.csv')
+df_datos = pd.read_csv(directorio + '/archivos/' + 'datos.csv')
 
 # para revision utilizar esta linea
 # df_datos = pd.read_csv('datos.csv')
