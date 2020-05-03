@@ -30,6 +30,8 @@ df_datos = pd.read_csv(directorio + '/archivos/' + 'datos.csv')
 # df_datos = pd.read_csv('datos.csv')
 # ------------------------------------------------------------------------------------------ #
 
+# Semilla para aleatorios
+np.random.seed(2020)
 # Las iteraciones son el criterio de paro
 param_iter = 100
 # cantidad de centroides
@@ -96,6 +98,7 @@ colores = ['blue', 'red', 'green', 'brown', 'black']
 plt.scatter(centroides[0, :], centroides[1, :], s=200, c='grey')
 plt.scatter(centroides[0, :], centroides[1, :], s=100, c='white')
 plt.title('Datos a clasificar')
+plt.grid()
 plt.show()
 
 # ------------------------------------------------------------------------------------------ #
@@ -116,3 +119,20 @@ cent_ind = np.argmin(euclidianas, axis=1) + 1
 print('el nuevo dato: ' + '[' + str(dato_nuevo[0][0]) + ', ' + str(dato_nuevo[1][0]) + '], ' +
       ' pertenece al centroide: ' + str(cent_ind[0]) + ', el que es de color: ' +
       colores[cent_ind[0] - 1])
+
+# ------------------------------------------------------------------------------------------ #
+
+# codigo para visualizacion
+colores = ['blue', 'red', 'green', 'brown', 'black']
+[plt.scatter(k_means_data[i + 1][:, 0], k_means_data[i + 1][:, 1], color=colores[i])
+ for i in range(param_k)]
+plt.scatter(centroides[0, :], centroides[1, :], s=200, c='grey')
+plt.scatter(centroides[0, :], centroides[1, :], s=100, c='white')
+
+plt.scatter(dato_nuevo[0, :], dato_nuevo[1, :], s=150, c=colores[cent_ind[0] - 1])
+plt.scatter(dato_nuevo[0, :], dato_nuevo[1, :], s=100, c='white')
+plt.scatter(dato_nuevo[0, :], dato_nuevo[1, :], s=25, c=colores[cent_ind[0] - 1])
+
+plt.title('Datos a clasificar')
+plt.grid()
+plt.show()
