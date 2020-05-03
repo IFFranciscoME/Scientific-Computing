@@ -1,6 +1,7 @@
 # Requerimientos para el proyecto
 
-pandas
 numpy
-sklearn
+random
+os
+pandas
 matplotlib
