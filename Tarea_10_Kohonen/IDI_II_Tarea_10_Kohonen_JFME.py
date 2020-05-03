@@ -1,7 +1,7 @@
 
 # -- ------------------------------------------------------------------------------------ -- #
 # -- proyecto: IDI-II: Ejercicio con Kmeans
-# -- codigo: IDI_II_Tarea_9_Kmeans_JFME.py
+# -- codigo: IDI_II_Tarea_10_Kohonen_JFME.py
 # -- repositorio: https://github.com/IFFranciscoME/IDI_II_GIT
 # -- ------------------------------------------------------------------------------------ -- #
 
@@ -18,7 +18,6 @@ de acuerdo a la clasificación obtenida anteriormente.
 """
 
 import numpy as np
-import random
 import os
 import pandas as pd
 
