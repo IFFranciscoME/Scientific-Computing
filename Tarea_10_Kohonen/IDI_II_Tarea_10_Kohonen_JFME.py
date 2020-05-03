@@ -18,8 +18,9 @@ de acuerdo a la clasificación obtenida anteriormente.
 """
 
 import numpy as np
-import os
 import pandas as pd
+import os
+import random
 
 # ------------------------------------------------------------------------------------------ #
 
@@ -31,6 +32,8 @@ df_datos = pd.read_csv(directorio + '/archivos/' + 'datos.csv')
 # df_datos = pd.read_csv('datos.csv')
 # ------------------------------------------------------------------------------------------ #
 
+# Semilla para aleatorios
+np.random.seed(2020)
 # Las iteraciones son el criterio de paro
 param_iter = 100
 # cantidad de centroides
@@ -47,3 +50,7 @@ centroides = np.array([]).reshape(n, 0)
 # objeto vacio para guardar todos los resultados de las iteraciones
 kohonen_data = dict()
 # ------------------------------------------------------------------------------------------ #
+
+# crear una param_k cantidad de centroides aleatorios
+for _ in range(param_k):
+    centroides = np.c_[centroides, datos[random.randint(0, m - 1)]]
