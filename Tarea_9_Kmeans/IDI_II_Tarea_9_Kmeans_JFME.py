@@ -21,15 +21,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # ------------------------------------------------------------------------------------------ #
+
+# para correr en mi compu uso estas lineas
 directorio = os.getcwd()
 df_datos = pd.read_csv(directorio + '/Tarea_9_Kmeans/archivos/' + 'datos.csv')
-datos = np.array([list(df_datos['x']), list(df_datos['y'])]).T
+
+# para revision utilizar esta linea
+# df_datos = pd.read_csv('datos.csv')
 # ------------------------------------------------------------------------------------------ #
 
+# Las iteraciones son el criterio de paro
 param_iter = 100
+# cantidad de centroides
 param_k = 3
 
 # ------------------------------------------------------------------------------------------ #
+# objeto para guardar datos de entrada
+datos = np.array([list(df_datos['x']), list(df_datos['y'])]).T
 # dimensiones
 m = datos.shape[0]
 n = datos.shape[1]
@@ -44,8 +52,10 @@ for _ in range(param_k):
     centroides = np.c_[centroides, datos[random.randint(0, m - 1)]]
 
 # ------------------------------------------------------------------------------------------ #
-# ciclo de busqueda
+
+# iteraciones de busqueda y ajuste
 for i in range(param_iter):
+
     # objeto con distancias euclidianas
     euclidianas = np.array([]).reshape(m, 0)
 
