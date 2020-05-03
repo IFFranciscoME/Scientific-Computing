@@ -6,9 +6,12 @@
 # -- ------------------------------------------------------------------------------------ -- #
 
 """
-Realizar código en Python que reciba una tabla de datos numéricos organizados en 2 columnas
-(x,y) y devuelva los centroides de k>=2 clases usando k-medias. Inicialice los centroides con
-valores aleatorios (de forma uniforme en el rango de valores de cada columna).
+Realizar código en Python que reciba una tabla de datos numéricos organizados en
+2 columnas (x,y) y devuelva los centroides de k>=2 clases usando una red de Kohonen.
+Inicialice los centroides con valores aleatorios (de forma uniforme en el rango de valores
+de cada columna). Utilice tamaños de paso a partir de 2 que aumenten linealmente, y detenga
+el proceso cuando no haya centroide que presente un cambio significativo
+(a su nivel de precisión).
 
 Luego, realice código que reciba una pareja de valores (x,y) y devuelva a qué clase pertenece
 de acuerdo a la clasificación obtenida anteriormente.
@@ -45,7 +48,3 @@ centroides = np.array([]).reshape(n, 0)
 # objeto vacio para guardar todos los resultados de las iteraciones
 kohonen_data = dict()
 # ------------------------------------------------------------------------------------------ #
-
-# crear una param_k cantidad de centroides aleatorios
-for _ in range(param_k):
-    centroides = np.c_[centroides, datos[random.randint(0, m - 1)]]
