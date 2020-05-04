@@ -36,11 +36,11 @@ df_datos = pd.read_csv(directorio + '/archivos/' + 'datos.csv')
 # Semilla para aleatorios
 np.random.seed(2020)
 # cantidad de centroides
-param_k = 4
-# tamano de paso
+param_k = 2
+# tamano de paso inicial
 param_t = 2
 # criterio de paro (precision del error)
-param_p = 1e1
+param_p = 1e-1
 
 # ------------------------------------------------------------------------------------------ #
 # objeto para guardar datos de entrada
@@ -53,8 +53,6 @@ centroides = np.array([]).reshape(n, 0)
 # objeto vacio para guardar todos los resultados de las iteraciones
 componentes = ['x', 'y', 'z']
 
-# ------------------------------------------------------------------------------------------ #
-
 # crear una param_k cantidad de centroides aleatorios
 for _ in range(param_k):
     centroides = np.c_[centroides, datos[random.randint(0, m - 1)]]
@@ -62,6 +60,7 @@ for _ in range(param_k):
 centroides = centroides.T
 centroides_iniciales = centroides.copy()
 centroides_actualizados = []
+# ------------------------------------------------------------------------------------------ #
 
 # error inicial
 error = float("inf")
@@ -129,6 +128,7 @@ plt.title('Iteracion: ' + str(iteracion))
 plt.grid()
 plt.show()
 # ------------------------------------------------------------------------------------------ #
+
 # Dato nuevo para clasificar
 dato_nuevo = np.array([[50], [1000]])
 
