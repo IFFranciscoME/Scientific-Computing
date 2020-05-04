@@ -38,6 +38,8 @@ np.random.seed(2020)
 param_iter = 100
 # cantidad de centroides
 param_k = 3
+# tamano de paso
+param_p = 2
 
 # ------------------------------------------------------------------------------------------ #
 # objeto para guardar datos de entrada
@@ -54,3 +56,35 @@ kohonen_data = dict()
 # crear una param_k cantidad de centroides aleatorios
 for _ in range(param_k):
     centroides = np.c_[centroides, datos[random.randint(0, m - 1)]]
+
+# objeto con distancias euclidianas
+
+
+# -- Distancia un dato a todos los centroides
+
+for i_dato in range(len(datos)):
+    i_dato = 2
+    print(datos[i_dato])
+    print(centroides)
+
+    # objeto con distancias euclidianas
+    euclidianas = []
+
+    for i_centroide in range(param_k):
+        # distancia euclidiana del punto con cada centroide
+        distancias = np.sum((datos[i_dato] - centroides[:, i_centroide])**2, axis=0)
+        # concatenar para cada punto sus distancias con cada centroide
+        euclidianas.append(distancias)
+
+    # segun la menor distancia es el centroide que le corresponde
+    cent_dato = np.argmin(euclidianas)
+    # calcular nueva distancia con tamano de paso
+    # distancia entre posicion actual del centroide y del dato
+
+    centroides.T[0] - (datos[i_dato])
+
+    # centroides[0][cent_dato] = centroides[0][cent_dato] * 1/param_p
+    # centroides[1][cent_dato] = centroides[1][cent_dato] * 1/param_p
+
+# concatenar para cada punto sus distancias con cada centroide
+euclidianas = np.c_[euclidianas, distancias]
