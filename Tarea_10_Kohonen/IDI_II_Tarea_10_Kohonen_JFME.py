@@ -35,12 +35,12 @@ df_datos = pd.read_csv(directorio + '/archivos/' + 'datos.csv')
 
 # Semilla para aleatorios
 np.random.seed(2020)
-# Las iteraciones son el criterio de paro
-param_iter = 100
 # cantidad de centroides
 param_k = 4
 # tamano de paso
-param_p = 2
+param_t = 2
+# criterio de paro (precision del error)
+param_p = 1e1
 
 # ------------------------------------------------------------------------------------------ #
 # objeto para guardar datos de entrada
@@ -58,15 +58,20 @@ componentes = ['x', 'y', 'z']
 # crear una param_k cantidad de centroides aleatorios
 for _ in range(param_k):
     centroides = np.c_[centroides, datos[random.randint(0, m - 1)]]
-
+# ajustes de formato y respaldo
 centroides = centroides.T
 centroides_iniciales = centroides.copy()
-# objeto con distancias euclidianas
+centroides_actualizados = []
 
-# iteracion para acomodar centroides
-for iteracion in range(param_iter):
-    # iteracion = 0
+# error inicial
+error = float("inf")
+# contador de iteraciones inicial
+iteracion = 0
 
+# -- iteracion para acomodar centroides
+while error > param_p:
+    # contador de iteraciones para tamano de paso
+    iteracion += 1
     # cuadro de con datos y la clase a la que pertenence
     kohonen_data = pd.concat([pd.DataFrame({'dato_' + componentes[i]: 0 for i in range(n)},
                                            index=np.arange(m)),
@@ -76,13 +81,10 @@ for iteracion in range(param_iter):
 
     # -- Distancia un dato a todos los centroides
     for i_dato in range(len(datos)):
-        # i_dato = 0
-
         # objeto con distancias euclidianas
         euclidianas = []
-
+        # -- distancia de cada punto
         for i_centroide in range(param_k):
-
             # distancia euclidiana del punto con cada centroide
             distancias = np.linalg.norm(datos[i_dato] - centroides[i_centroide])
             # concatenar para cada punto sus distancias con cada centroide
@@ -91,13 +93,16 @@ for iteracion in range(param_iter):
         # encontrar el indice de la distancia menor
         cent_dato = np.argmin(euclidianas)
 
+        # centroide encotrado como cercano
+        centroides_o = centroides.copy()
+
         # actualizar tabla de datos + centroides
         kohonen_data.loc[i_dato] = np.append(np.append(datos[i_dato], cent_dato),
                                              centroides[cent_dato])
 
         # calcular nueva distancia con tamano de paso para N cantidad de componentes
         comps = [centroides[cent_dato][i] +
-                       (datos[i_dato][i] - centroides[cent_dato][i]) * 1/(iteracion+1)
+                       (datos[i_dato][i] - centroides[cent_dato][i]) * 1/(param_t + iteracion)
                        for i in range(len(centroides[cent_dato]))]
 
         # componentes del nuevo centroide
@@ -107,7 +112,15 @@ for iteracion in range(param_iter):
         for i in range(len(nvo_centroide)):
             centroides[cent_dato][i] = nvo_centroide[i]
 
-colores = ['blue', 'red', 'green', 'brown', 'black']
+        # calcular diferencia de errores
+        error = np.nanmax(abs(centroides_o - centroides))
+
+# mensaje de salida
+print('el algoritmo convergio en: ' + str(iteracion) + ' iteraciones')
+
+# ------------------------------------------------------------------------------------------ #
+# codigo para visualizacion de salida
+colores = ['blue', 'red', 'green', 'brown', 'black', 'orange']
 [plt.scatter(kohonen_data.loc[i][0], kohonen_data.loc[i][1],
              color=colores[int(kohonen_data['cluster'][i])])
  for i in range(len(datos))]
@@ -115,7 +128,6 @@ plt.scatter(centroides.T[0], centroides.T[1], s=200, c=colores[0:param_k])
 plt.title('Iteracion: ' + str(iteracion))
 plt.grid()
 plt.show()
-
 # ------------------------------------------------------------------------------------------ #
 # Dato nuevo para clasificar
 dato_nuevo = np.array([[50], [1000]])
@@ -123,12 +135,12 @@ dato_nuevo = np.array([[50], [1000]])
 # calcular distancias
 euclidianas = []
 
+# generar clasificacion con base al entrenamiento
 for i_centroide in range(param_k):
     # distancia euclidiana del punto con cada centroide
     distancias = np.linalg.norm(dato_nuevo.T - centroides[i_centroide])
     # concatenar para cada punto sus distancias con cada centroide
     euclidianas.append(distancias)
-
 cent_ind = np.argmin(euclidianas, axis=0)
 
 # respuesta de texto final
@@ -137,19 +149,21 @@ print('el nuevo dato: ' + '[' + str(dato_nuevo[0][0]) + ', ' + str(dato_nuevo[1]
       colores[cent_ind])
 
 # ------------------------------------------------------------------------------------------ #
-#
 # codigo para visualizacion
-colores = ['blue', 'red', 'green', 'brown', 'black']
+
+# colores
+colores = ['blue', 'red', 'green', 'brown', 'black', 'yellow']
 [plt.scatter(kohonen_data.loc[i][0], kohonen_data.loc[i][1],
              color=colores[int(kohonen_data['cluster'][i])])
  for i in range(len(datos))]
+# centroides
 plt.scatter(centroides.T[0], centroides.T[1], s=200, c=colores[0:param_k])
 plt.scatter(centroides.T[0], centroides.T[1], s=50, c='white')
-
+# nuevo punto
 plt.scatter(dato_nuevo[0, :], dato_nuevo[1, :], s=150, c=colores[cent_ind])
 plt.scatter(dato_nuevo[0, :], dato_nuevo[1, :], s=100, c='white')
 plt.scatter(dato_nuevo[0, :], dato_nuevo[1, :], s=25, c=colores[cent_ind])
-
+# extra
 plt.title('Datos a clasificar')
 plt.grid()
 plt.show()
