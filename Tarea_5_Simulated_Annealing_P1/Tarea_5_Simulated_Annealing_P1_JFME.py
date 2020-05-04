@@ -7,15 +7,14 @@
 
 """
 1.- Con la tabla de distancias 8c_test, encuentre el ciclo de valor mínimo usando el algoritmo
-“Simulated Annealing (SA)”. Decida la manera de decrementar la temperatura para
-obtener la mejor respuesta que le sea posible. Repita el algoritmo varias veces y
-encuentre el menor valor de todas las corridas, escriba la desviación estándar de las
-respuestas obtenidas. No verifique más del 1% de las permutaciones. Escriba las
-configuraciones utilizadas y el número de rutas que fueron revisadas.
+“Simulated Annealing (SA)”. Decida la manera de decrementar la temperatura para obtener la
+mejor respuesta que le sea posible. Repita el algoritmo varias veces y encuentre el menor
+valor de todas las corridas, escriba la desviación estándar de las respuestas obtenidas. No
+verifique más del 1% de las permutaciones. Escriba las configuraciones utilizadas y el número
+de rutas que fueron revisadas.
 
 2.- Ahora encuentre el ciclo de valor mínimo para la tabla 20c_test. No hay límite de
-configuraciones. De nuevo escriba las configuraciones utilizadas y el número de rutas
-revisado
+configuraciones. De nuevo escriba las configuraciones utilizadas y el número de rutas revisado
 """
 
 import numpy as np
