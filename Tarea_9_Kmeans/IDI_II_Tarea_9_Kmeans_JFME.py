@@ -35,7 +35,7 @@ np.random.seed(2020)
 # Las iteraciones son el criterio de paro
 param_iter = 100
 # cantidad de centroides
-param_k = 3
+param_k = 4
 
 # ------------------------------------------------------------------------------------------ #
 # objeto para guardar datos de entrada
@@ -92,10 +92,10 @@ for i in range(param_iter):
 # ------------------------------------------------------------------------------------------ #
 
 # codigo para visualizacion
-colores = ['blue', 'red', 'green', 'brown', 'black']
+colores = ['blue', 'red', 'green', 'black', 'orange']
 [plt.scatter(k_means_data[i + 1][:, 0], k_means_data[i + 1][:, 1], color=colores[i])
  for i in range(param_k)]
-plt.scatter(centroides[0, :], centroides[1, :], s=200, c='grey')
+plt.scatter(centroides[0, :], centroides[1, :], s=200, c=colores[0:param_k])
 plt.scatter(centroides[0, :], centroides[1, :], s=100, c='white')
 plt.title('Datos a clasificar')
 plt.grid()
@@ -123,10 +123,10 @@ print('el nuevo dato: ' + '[' + str(dato_nuevo[0][0]) + ', ' + str(dato_nuevo[1]
 # ------------------------------------------------------------------------------------------ #
 
 # codigo para visualizacion
-colores = ['blue', 'red', 'green', 'brown', 'black']
+colores = ['blue', 'red', 'green', 'black', 'orange']
 [plt.scatter(k_means_data[i + 1][:, 0], k_means_data[i + 1][:, 1], color=colores[i])
  for i in range(param_k)]
-plt.scatter(centroides[0, :], centroides[1, :], s=200, c='grey')
+plt.scatter(centroides[0, :], centroides[1, :], s=200, c=colores[0:param_k])
 plt.scatter(centroides[0, :], centroides[1, :], s=100, c='white')
 
 plt.scatter(dato_nuevo[0, :], dato_nuevo[1, :], s=150, c=colores[cent_ind[0] - 1])
