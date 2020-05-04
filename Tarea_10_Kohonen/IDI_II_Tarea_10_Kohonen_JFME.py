@@ -21,6 +21,9 @@ import numpy as np
 import pandas as pd
 import os
 import random
+# import matplotlib
+# matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 # ------------------------------------------------------------------------------------------ #
 
@@ -50,41 +53,74 @@ n = datos.shape[1]
 # objeto vacio para almacenar n cantidad de centroides
 centroides = np.array([]).reshape(n, 0)
 # objeto vacio para guardar todos los resultados de las iteraciones
-kohonen_data = dict()
+componentes = ['x', 'y', 'z']
+
 # ------------------------------------------------------------------------------------------ #
 
 # crear una param_k cantidad de centroides aleatorios
 for _ in range(param_k):
     centroides = np.c_[centroides, datos[random.randint(0, m - 1)]]
 
+centroides = centroides.T
+
+centroides_iniciales = centroides.copy()
 # objeto con distancias euclidianas
 
+# cuadro de con datos y la clase a la que pertenence
+kohonen_data = pd.concat([pd.DataFrame({'dato_' + componentes[i]: 0 for i in range(n)},
+                                       index=np.arange(m)),
+                          pd.DataFrame({'cluster': 0}, index=np.arange(m)),
+                          pd.DataFrame({'cent_' + componentes[i]: 0 for i in range(n)},
+                                       index=np.arange(m))], axis=1)
 
-# -- Distancia un dato a todos los centroides
+# iteracion para acomodar centroides
+for iteracion in range(param_iter):
+    # iteracion = 0
 
-for i_dato in range(len(datos)):
-    i_dato = 2
-    print(datos[i_dato])
-    print(centroides)
+    # -- Distancia un dato a todos los centroides
+    for i_dato in range(len(datos)):
+        # i_dato = 0
+        print('el dato es: ')
+        print(datos[i_dato])
+        print('los centroides son: ')
+        print(centroides)
 
-    # objeto con distancias euclidianas
-    euclidianas = []
+        # objeto con distancias euclidianas
+        euclidianas = []
 
-    for i_centroide in range(param_k):
-        # distancia euclidiana del punto con cada centroide
-        distancias = np.sum((datos[i_dato] - centroides[:, i_centroide])**2, axis=0)
-        # concatenar para cada punto sus distancias con cada centroide
-        euclidianas.append(distancias)
+        for i_centroide in range(param_k):
+            # i_centroide = 0
+            # distancia euclidiana del punto con cada centroide
+            distancias = np.linalg.norm(datos[i_dato] - centroides[i_centroide])
+            # concatenar para cada punto sus distancias con cada centroide
+            euclidianas.append(distancias)
 
-    # segun la menor distancia es el centroide que le corresponde
-    cent_dato = np.argmin(euclidianas)
-    # calcular nueva distancia con tamano de paso
-    # distancia entre posicion actual del centroide y del dato
+        # encontrar el indice de la distancia menor
+        cent_dato = np.argmin(euclidianas)
 
-    centroides.T[0] - (datos[i_dato])
+        # actualizar tabla de datos + centroides
+        kohonen_data.loc[i_dato] = np.append(np.append(datos[i_dato], cent_dato),
+                                             centroides[cent_dato])
 
-    # centroides[0][cent_dato] = centroides[0][cent_dato] * 1/param_p
-    # centroides[1][cent_dato] = centroides[1][cent_dato] * 1/param_p
+        # calcular nueva distancia con tamano de paso
+        factor = param_p + 1
+        nvo_centroide = (centroides[cent_dato] + datos[i_dato])/factor
+        # actualizar cada componente del centroide
+        for i in range(len(nvo_centroide)):
+            centroides[cent_dato][i] = nvo_centroide[i]
 
-# concatenar para cada punto sus distancias con cada centroide
-euclidianas = np.c_[euclidianas, distancias]
+        # print('actualizacion del centroide: ' + str(cent_dato))
+        # print(centroides)
+
+print(centroides_iniciales)
+print(centroides)
+
+# codigo para visualizacion
+colores = ['blue', 'red', 'green', 'brown', 'black']
+[plt.scatter(kohonen_data.loc[i + 1][0], kohonen_data.loc[i + 1][1], color=colores[i])
+ for i in range(param_k)]
+plt.scatter(centroides[0, :], centroides[1, :], s=200, c='grey')
+plt.scatter(centroides[0, :], centroides[1, :], s=100, c='white')
+plt.title('Datos a clasificar')
+plt.grid()
+plt.show()
