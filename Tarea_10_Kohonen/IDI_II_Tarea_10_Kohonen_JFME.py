@@ -21,8 +21,6 @@ import numpy as np
 import pandas as pd
 import os
 import random
-# import matplotlib
-# matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 # ------------------------------------------------------------------------------------------ #
@@ -115,12 +113,14 @@ for iteracion in range(param_iter):
 print(centroides_iniciales)
 print(centroides)
 
-# codigo para visualizacion
+
 colores = ['blue', 'red', 'green', 'brown', 'black']
-[plt.scatter(kohonen_data.loc[i + 1][0], kohonen_data.loc[i + 1][1], color=colores[i])
- for i in range(param_k)]
-plt.scatter(centroides[0, :], centroides[1, :], s=200, c='grey')
-plt.scatter(centroides[0, :], centroides[1, :], s=100, c='white')
+[plt.scatter(kohonen_data.loc[i][0], kohonen_data.loc[i][1],
+             color=colores[int(kohonen_data['cluster'][i])])
+ for i in range(len(datos))]
+
+plt.scatter(centroides.T[0], centroides.T[1], s=200, c=colores[0:param_k])
+
 plt.title('Datos a clasificar')
 plt.grid()
 plt.show()
