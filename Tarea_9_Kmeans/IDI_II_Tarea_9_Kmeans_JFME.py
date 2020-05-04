@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 
 # para correr en mi compu uso estas lineas
 directorio = os.getcwd()
-df_datos = pd.read_csv(directorio + '/archivos/' + 'datos.csv')
+df_datos = pd.read_csv(directorio + '/archivos/' + 'datos_clase.csv')
 
 # para revision utilizar esta linea
 # df_datos = pd.read_csv('datos.csv')
@@ -33,9 +33,9 @@ df_datos = pd.read_csv(directorio + '/archivos/' + 'datos.csv')
 # Semilla para aleatorios
 np.random.seed(2020)
 # Las iteraciones son el criterio de paro
-param_iter = 100
+param_iter = 15
 # cantidad de centroides
-param_k = 4
+param_k = 3
 
 # ------------------------------------------------------------------------------------------ #
 # objeto para guardar datos de entrada
@@ -103,7 +103,7 @@ plt.show()
 
 # ------------------------------------------------------------------------------------------ #
 # Dato nuevo para clasificar
-dato_nuevo = np.array([[60], [250]])
+dato_nuevo = np.array([[60], [50]])
 
 # calcular distancias
 euclidianas = np.array([]).reshape(len(dato_nuevo), 0)

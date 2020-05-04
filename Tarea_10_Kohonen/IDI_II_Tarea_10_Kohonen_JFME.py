@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 
 # para correr en mi compu uso estas lineas
 directorio = os.getcwd()
-df_datos = pd.read_csv(directorio + '/archivos/' + 'datos.csv')
+df_datos = pd.read_csv(directorio + '/archivos/' + 'datos_clase.csv')
 
 # para revision utilizar esta linea
 # df_datos = pd.read_csv('datos.csv')
@@ -130,7 +130,7 @@ plt.show()
 # ------------------------------------------------------------------------------------------ #
 
 # Dato nuevo para clasificar
-dato_nuevo = np.array([[50], [1000]])
+dato_nuevo = np.array([[60], [50]])
 
 # calcular distancias
 euclidianas = []
