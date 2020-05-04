@@ -36,7 +36,7 @@ df_datos = pd.read_csv(directorio + '/archivos/' + 'datos_clase.csv')
 # Semilla para aleatorios
 np.random.seed(2020)
 # cantidad de centroides
-param_k = 2
+param_k = 4
 # tamano de paso inicial
 param_t = 2
 # criterio de paro (precision del error)
