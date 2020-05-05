@@ -8,6 +8,7 @@
 import numpy as np
 import random
 import os
+import copy
 from PIL import Image as im
 
 
@@ -67,9 +68,15 @@ def f_kmeans(param_data, param_k, param_iter):
     ---------
     param_data = imagen['datos']
     param_k = 3
-    param_iter = 10
+    param_iter = 50
 
     """
+
+    # copia original de los datos de entrada
+    array_final = copy.deepcopy(param_data)
+
+    # quitar 4 columna
+    param_data = param_data[:, :-1]
 
     # dimensiones
     m = param_data.shape[0]
@@ -122,7 +129,20 @@ def f_kmeans(param_data, param_k, param_iter):
         # Dejar resultados finales en un diccionario
         k_means_data.update(cent_data)
 
-    return {'datos': k_means_data, 'centroides': centroides}
+    # reacomodar datos con en formato original de entrada
+    k_means_a_data = np.concatenate([v for k, v in sorted(k_means_data.items())], 0)
+
+    # lista de centroides a los que pertenece cada dato
+    cents = list(k_means_data.keys())
+    cents = [np.repeat(i, len(k_means_data[i])) for i in cents]
+    cents = np.concatenate((cents[0], cents[1], cents[2]))
+
+    # generar array final con datos originales + centroide al que pertenencen
+    nuevos_datos = np.zeros((len(cents), 4))
+    nuevos_datos[:, :-1] = k_means_a_data
+    array_final[:, 3] = cents
+
+    return {'datos': array_final, 'centroides': centroides}
 
 
 # -- --------------------------------------------------------- FUNCION: Metodo de K-Means -- #
@@ -139,21 +159,20 @@ def f_reescribir_imagen(param_data, param_dims, param_nombre):
     Returns
     -------
 
+
     Debugging
     ---------
-    param_dims = imagen.size
-    param_data = datos_imagen
-    param_cent = resultados_kmeans['centroides']
-
+    param_dims = imagen['dimensiones']
+    param_data = r_kmeans['datos']
+    param_nombre = 'kmeans_salida.jpg'
 
     """
 
-    # nuevo_r = np.reshape(param_data, (param_dims, 3))
-    #
-    # nuevo_r = nuevo_r.astype(np.uint8)
-    # nueva = im.fromarray(nuevo_r)
-    #
-    # directorio = os.getcwd()
-    # nueva.save(directorio + '/imagenes/' + param_nombre)
+    imagen = np.reshape(param_data[:, 0:3], (param_dims[0], param_dims[1], 3))
+    datos = imagen.astype(np.uint8)
+    nueva_imagen = im.fromarray(datos)
+
+    directorio = os.getcwd()
+    nueva_imagen.save(directorio + '/imagenes/' + param_nombre)
 
     return 1

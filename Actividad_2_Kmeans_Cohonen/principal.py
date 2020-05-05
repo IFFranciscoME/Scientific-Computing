@@ -20,13 +20,14 @@ archivos = [f for f in listdir(abspath) if isfile(join(abspath, f))]
 # ['bandera_alemania.jpg', 'bandera_mexico.jpg', 'paisaje_riscos.jpg', 'persona_gandhi.jpg']
 
 # obtener los datos de la imagen
-imagen = fn.f_entrada_imagenes(param_nombre=archivos[0])
+imagen = fn.f_entrada_imagenes(param_nombre=archivos[3])
 
 # obtener resultados con k-means
-# resultados_kmeans = fn.f_kmeans(param_data=imagen['datos'], param_k=3, param_iter=100)
+r_kmeans = fn.f_kmeans(param_data=imagen['datos'], param_k=3, param_iter=50)
 
 # reescribir la imagen
-# fn.f_reescribir_imagen(param_data=imagen['datos'])
+fn.f_reescribir_imagen(param_data=r_kmeans['datos'], param_dims=imagen['dimensiones'],
+                       param_nombre='kmeans_salida.jpg')
 
 # obtener resultados con Kohonen
 # resultados_kmean = fn.f_kmeans(param_data=datos_imagen, param_k=3, param_iter=10)
