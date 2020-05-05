@@ -168,7 +168,7 @@ def f_reescribir_imagen(param_data, param_dims, param_nombre):
 
     """
 
-    imagen = np.reshape(param_data[:, 0:3], (param_dims[0], param_dims[1], 3))
+    imagen = np.reshape(param_data[:, 0:3], (param_dims[1], param_dims[01], 3))
     datos = imagen.astype(np.uint8)
     nueva_imagen = im.fromarray(datos)
 

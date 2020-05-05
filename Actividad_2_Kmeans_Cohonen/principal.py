@@ -20,7 +20,7 @@ archivos = [f for f in listdir(abspath) if isfile(join(abspath, f))]
 # ['bandera_alemania.jpg', 'bandera_mexico.jpg', 'paisaje_riscos.jpg', 'persona_gandhi.jpg']
 
 # obtener los datos de la imagen
-imagen = fn.f_entrada_imagenes(param_nombre=archivos[3])
+imagen = fn.f_entrada_imagenes(param_nombre=archivos[0])
 
 # obtener resultados con k-means
 r_kmeans = fn.f_kmeans(param_data=imagen['datos'], param_k=3, param_iter=50)
