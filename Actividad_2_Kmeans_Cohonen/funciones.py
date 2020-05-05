@@ -15,7 +15,6 @@ from PIL import Image as im
 # -- ------------------------------------------------------------------------------------ -- #
 def f_entrada_imagenes(param_nombre):
     """
-
     Parameters
     ----------
     param_nombre : str : Nombre del archivo a leer
@@ -25,19 +24,28 @@ def f_entrada_imagenes(param_nombre):
 
     Debugging
     ---------
-    param_nombre = 'persona_gandhi.jpg'
+    param_nombre = 'bandera_mexico.jpg'
 
     """
-    directorio = os.getcwd()
-    imagen = im.open(directorio + '/imagenes/' + param_nombre)
-    a = np.array(imagen)
-    a.setflags(write=1)
-    total = imagen.size[0]*imagen.size[1]
-    a = np.reshape(a, (total, 3))
-    tabla = np.zeros((total, 4))
-    tabla[:, :-1] = a
 
-    return tabla
+    # obtener directorio de trabajo actual para encontrar ~/imagenes/archivo.jpg
+    directorio = os.getcwd()
+    # cargar archivo
+    archivo_imagen = im.open(directorio + '/imagenes/' + param_nombre)
+    # dejar como array a los datos obtenidos de la imagen
+    imagen = np.array(archivo_imagen)
+    # asegurarse que el array es escribible
+    imagen.setflags(write=True)
+    # proceso para hacer reshape y ordenar los datos en N renglones y 3 columnas
+    total = archivo_imagen.size[0]*archivo_imagen.size[1]
+    # reacomodar para tener todos los datos en una matriz vertical
+    imagen = np.reshape(imagen, (total, 3))
+    # crear un array de 0s y 4 columnas
+    datos_imagen = np.zeros((total, 4))
+    # escribir los datos de los pixeles (3 componentes) y una 4 para apoyo posterior
+    datos_imagen[:, :-1] = imagen
+
+    return {'datos': datos_imagen, 'dimensiones': archivo_imagen.size}
 
 
 # -- --------------------------------------------------------- FUNCION: Metodo de K-Means -- #
@@ -53,12 +61,13 @@ def f_kmeans(param_data, param_k, param_iter):
 
     Returns
     -------
+    {'datos': k_means_data, 'centroides': centroides}
 
     Debugging
     ---------
-    param_data = datos_imagen
+    param_data = imagen['datos']
     param_k = 3
-    param_iter = 50
+    param_iter = 10
 
     """
 
@@ -105,6 +114,7 @@ def f_kmeans(param_data, param_k, param_iter):
         # reacomodo de datos y parametro de k-mean
         for dato in range(param_k):
             # dar formato a arrays de datos en centroides
+            # cent_data[dato + 1] = cent_data[dato + 1].T
             cent_data[dato + 1] = cent_data[dato + 1].T
             # calcular el promedio de distancias de datos al centroide para cada centroide
             centroides[:, dato] = np.mean(cent_data[dato + 1], axis=0)
@@ -112,4 +122,38 @@ def f_kmeans(param_data, param_k, param_iter):
         # Dejar resultados finales en un diccionario
         k_means_data.update(cent_data)
 
-    return k_means_data
+    return {'datos': k_means_data, 'centroides': centroides}
+
+
+# -- --------------------------------------------------------- FUNCION: Metodo de K-Means -- #
+# -- ------------------------------------------------------------------------------------ -- #
+
+def f_reescribir_imagen(param_data, param_dims, param_nombre):
+    """
+    Parameters
+    ----------
+    param_data :
+    param_dims : np.array : con dimensiones de la imagen de salida
+    param_nombre :
+
+    Returns
+    -------
+
+    Debugging
+    ---------
+    param_dims = imagen.size
+    param_data = datos_imagen
+    param_cent = resultados_kmeans['centroides']
+
+
+    """
+
+    # nuevo_r = np.reshape(param_data, (param_dims, 3))
+    #
+    # nuevo_r = nuevo_r.astype(np.uint8)
+    # nueva = im.fromarray(nuevo_r)
+    #
+    # directorio = os.getcwd()
+    # nueva.save(directorio + '/imagenes/' + param_nombre)
+
+    return 1

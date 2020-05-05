@@ -7,19 +7,29 @@
 
 import funciones as fn
 import numpy as np
+from os import listdir, path
+from os.path import isfile, join
 
 # Semilla para aleatorios
 np.random.seed(2020)
-# Las iteraciones son el criterio de paro
-param_iter = 50
-# cantidad de centroides
-param_k = 3
+
+# busca en el sistema el directorio donde este la carpeta
+abspath = path.abspath('imagenes/')
+# extrae todos los nombres de los archivos dentro de esa carpeta
+archivos = [f for f in listdir(abspath) if isfile(join(abspath, f))]
+# ['bandera_alemania.jpg', 'bandera_mexico.jpg', 'paisaje_riscos.jpg', 'persona_gandhi.jpg']
 
 # obtener los datos de la imagen
-datos_imagen = fn.f_entrada_imagenes(param_nombre='persona_gandhi.jpg')
+imagen = fn.f_entrada_imagenes(param_nombre=archivos[0])
 
 # obtener resultados con k-means
-resultados_kmean = fn.f_kmeans(param_data=datos_imagen, param_k=3, param_iter=10)
+# resultados_kmeans = fn.f_kmeans(param_data=imagen['datos'], param_k=3, param_iter=100)
+
+# reescribir la imagen
+# fn.f_reescribir_imagen(param_data=imagen['datos'])
 
 # obtener resultados con Kohonen
 # resultados_kmean = fn.f_kmeans(param_data=datos_imagen, param_k=3, param_iter=10)
+
+# reescribir la imagen
+# fn.f_reescribir_imagen(param_data=imagen['datos'])
