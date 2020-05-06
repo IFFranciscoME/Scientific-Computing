@@ -51,117 +51,6 @@ def f_entrada_imagenes(param_nombre):
     return {'datos': datos_imagen, 'dimensiones': archivo_imagen.size}
 
 
-# -- --------------------------------------------------------- FUNCION: Metodo de Kohonen -- #
-# -- ------------------------------------------------------------------------------------ -- #
-def f_kohonen(param_data, param_k, param_t, param_p):
-    """
-
-    Parameters
-    ----------
-    param_data
-    param_k
-    param_t
-    param_p
-
-    Returns
-    -------
-
-
-    Debugging
-    ---------
-    param_data = imagen['datos']
-    param_k = 2
-    param_t = 2
-    param_p = 1e-11
-
-    """
-
-    # -------------------------------------------------------------------------------------- #
-    # datos de entrada
-    datos = param_data.copy()
-    datos = datos[:, 0:3]
-
-    # dimensiones
-    m = datos.shape[0]
-    n = datos.shape[1]
-
-    # objeto vacio para guardar todos los resultados de las iteraciones
-    componentes = ['x', 'y', 'z']
-
-    # crear una param_k cantidad de centroides aleatorios
-    centroides = (random.randint(np.amin(datos),
-                                 np.amax(datos))*np.random.random((3, param_k))).astype(int).T
-
-    # -------------------------------------------------------------------------------------- #
-
-    # error inicial
-    error = float("inf")
-    # contador de iteraciones inicial
-    iteracion = 0
-
-    # -- iteracion para acomodar centroides
-    while param_p < error:
-        # contador de iteraciones para tamano de paso
-        iteracion += 1
-        # cuadro de con datos y la clase a la que pertenence
-        kohonen_data = pd.concat([pd.DataFrame({'dato_' + componentes[i]: 0 for i in range(n)},
-                                               index=np.arange(m)),
-                                  pd.DataFrame({'cluster': 0}, index=np.arange(m)),
-                                  pd.DataFrame({'cent_' + componentes[i]: 0 for i in range(n)},
-                                               index=np.arange(m))], axis=1)
-
-        # -- Distancia un dato a todos los centroides
-        for i_dato in range(len(datos)):
-            # i_dato = 0
-            # objeto con distancias euclidianas
-            euclidianas = []
-            # -- distancia de cada punto
-            for i_centroide in range(param_k):
-                # distancia euclidiana del punto con cada centroide
-                distancias = np.linalg.norm(datos[i_dato] - centroides[i_centroide])
-                # concatenar para cada punto sus distancias con cada centroide
-                euclidianas.append(distancias)
-
-            # encontrar el indice de la distancia menor
-            cent_dato = np.argmin(euclidianas)
-
-            # centroide encotrado como cercano
-            centroides_o = copy.deepcopy(centroides)
-
-            # actualizar tabla de datos + centroides
-            kohonen_data.loc[i_dato] = np.append(np.append(datos[i_dato], cent_dato),
-                                                 centroides[cent_dato])
-
-            # calcular nueva distancia con tamano de paso para N cantidad de componentes
-            comps = [centroides[cent_dato][i] +
-                     (datos[i_dato][i] - centroides[cent_dato][i]) * 1 / (param_t + iteracion)
-                     for i in range(len(centroides[cent_dato]))]
-
-            # componentes del nuevo centroide
-            nvo_centroide = np.vstack(comps)
-
-            # actualizar cada componente del centroide
-            for i in range(len(nvo_centroide)):
-                centroides[cent_dato][i] = nvo_centroide[i]
-
-            # criterio para decimales, truncarlos a
-            centroides = np.trunc(centroides)
-
-            # calcular diferencia de errores
-            error = abs(centroides_o - centroides).sum()
-            print(error)
-
-        print('centroides originales fueron: ')
-        print(centroides)
-
-    # mensaje de salida
-    print('el algoritmo convergio en: ' + str(iteracion) + ' iteraciones')
-
-    # kohonen_data
-
-    return 1
-
-
 # -- --------------------------------------- FUNCION: Calculo de distancia entre vectpres -- #
 # -- ------------------------------------------------------------------------------------ -- #
 
@@ -188,6 +77,140 @@ def distancia(param_a, param_b):
     dist = np.linalg.norm(param_b - param_a)
 
     return dist
+
+
+# -- --------------------------------------------------------- FUNCION: Metodo de Kohonen -- #
+# -- ------------------------------------------------------------------------------------ -- #
+
+def f_kohonen(param_data, param_k, param_t, param_p):
+    """
+
+    Parameters
+    ----------
+    param_data
+    param_k
+    param_t
+    param_p
+
+    Returns
+    -------
+
+
+    Debugging
+    ---------
+    param_data = imagen['datos']
+    param_k = 3
+    param_t = 2
+    param_p = 1e1
+
+    """
+
+    # -------------------------------------------------------------------------------------- #
+    # datos de entrada
+    datos = param_data.copy().astype(int)
+
+    # agregar una 4ta columna para info de centroides
+    datos = np.append(datos, np.zeros((datos.shape[0], 1), dtype=int), axis=1)
+
+    # dimensiones
+    m = datos.shape[0]
+    n = datos.shape[1]
+
+    # componentes de datos
+    componentes = ['x', 'y', 'z']
+
+    # objeto vacio para almacenar n cantidad de centroides
+    centroides = np.array([]).reshape(n-1, 0)
+
+    # crear una param_k cantidad de centroides aleatorios
+    for _ in range(param_k):
+        centroides = np.c_[centroides, datos[random.randint(0, m)][0:n-1]]
+
+    # acomodar con transpuesta
+    centroides = centroides.T
+
+    # -------------------------------------------------------------------------------------- #
+
+    # error inicial
+    error = float("inf")
+    # contador de iteraciones inicial
+    iteracion = 0
+
+    kohonen_data = pd.DataFrame()
+
+    # -- iteracion para acomodar centroides
+    while error > param_p:
+        # contador de iteraciones para tamano de paso
+        iteracion += 1
+        # cuadro de con datos y la clase a la que pertenence
+        kohonen_data = pd.concat([pd.DataFrame({'dato_' + componentes[i]: 0
+                                                for i in range(n-1)}, index=np.arange(m)),
+                                  pd.DataFrame({'cent': 0}, index=np.arange(m)),
+                                  pd.DataFrame({'cent_' + componentes[i]: 0
+                                                for i in range(n-1)},
+                                               index=np.arange(m))], axis=1)
+
+        # -- Distancia un dato a todos los centroides
+        for i_dato in range(len(datos)):
+            # i_dato = 0
+            # objeto con distancias euclidianas
+            euclidianas = []
+            # -- distancia de cada punto
+            for i_centroide in range(param_k):
+                # distancia euclidiana del punto con cada centroide
+                distancias = np.linalg.norm(datos[i_dato][0:n-1] - centroides[i_centroide])
+                # concatenar para cada punto sus distancias con cada centroide
+                euclidianas.append(distancias)
+
+            # encontrar el indice de la distancia menor
+            cent_dato = np.argmin(euclidianas)
+
+            # centroide encotrado como cercano
+            centroides_o = copy.deepcopy(centroides)
+
+            # actualizar tabla de datos + centroides
+            kohonen_data.loc[i_dato] = np.append(np.append(datos[i_dato][0:n-1], cent_dato),
+                                                 centroides[cent_dato])
+
+            # calcular nueva distancia con tamano de paso para N cantidad de componentes
+            comps = [centroides[cent_dato][i] +
+                     (datos[i_dato][i] - centroides[cent_dato][i]) * 1 / (param_t + iteracion)
+                     for i in range(len(centroides[cent_dato]))]
+
+            # componentes del nuevo centroide
+            nvo_centroide = np.vstack(comps)
+
+            # actualizar cada componente del centroide
+            for i in range(len(nvo_centroide)):
+                centroides[cent_dato][i] = nvo_centroide[i]
+
+            # criterio para decimales, truncarlos a
+            # centroides = np.trunc(centroides)
+
+            # calcular diferencia de errores
+            error = np.nanmax(abs(centroides_o - centroides))
+
+            # print(error)
+
+        # impresiones de control
+        print('\n')
+        print('iteracion: ', iteracion)
+        print('error: ', error)
+
+    # mensaje de salida
+    print('el algoritmo convergio en: ' + str(iteracion) + ' iteraciones')
+
+    # kohonen_data
+    # segun la columna de cent, asignar coordenadas de ultimos centroides
+    # a cada dato
+    for i_centroide in range(len(centroides)):
+        kohonen_data.loc[kohonen_data['cent'] == i_centroide,
+                         ['dato_x', 'dato_y', 'dato_z']] = centroides[i_centroide]
+
+    # datos numericos de salida
+    datos = np.array(kohonen_data.iloc[:, 0:3])
+
+    return {'datos': datos, 'centroides': centroides}
 
 
 # -- --------------------------------------------------------- FUNCION: Metodo de K-Means -- #

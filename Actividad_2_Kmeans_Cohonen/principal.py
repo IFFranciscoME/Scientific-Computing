@@ -24,14 +24,15 @@ archivos = [f for f in listdir(abspath) if isfile(join(abspath, f))]
 imagen = fn.f_entrada_imagenes(param_nombre=archivos[2])
 
 # obtener resultados con k-means
-r_kmeans = fn.f_kmeans(param_data=imagen['datos'], param_k=12, param_iter=50)
+# r_kmeans = fn.f_kmeans(param_data=imagen['datos'], param_k=3, param_iter=50)
 
 # reescribir la imagen
-fn.f_reescribir_imagen(param_data=r_kmeans['datos'], param_dims=imagen['dimensiones'],
-                       param_nombre='kmeans_salida.jpg')
+# fn.f_reescribir_imagen(param_data=r_kmeans['datos'], param_dims=imagen['dimensiones'],
+#                        param_nombre='kmeans_salida.jpg')
 
 # obtener resultados con Kohonen
-# resultados_kmean = fn.f_kmeans(param_data=datos_imagen, param_k=3, param_iter=10)
+r_kohonen = fn.f_kohonen(param_data=imagen['datos'], param_k=24, param_t=10, param_p=1e1)
 
 # reescribir la imagen
-# fn.f_reescribir_imagen(param_data=imagen['datos'])
+fn.f_reescribir_imagen(param_data=r_kohonen['datos'], param_dims=imagen['dimensiones'],
+                       param_nombre='kohonen_salida.jpg')
