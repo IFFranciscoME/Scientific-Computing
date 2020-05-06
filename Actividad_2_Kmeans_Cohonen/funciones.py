@@ -18,12 +18,14 @@ from PIL import Image as im
 def f_entrada_imagenes(param_nombre):
     """
     Funcion para leer archivos de imagenes como datos de entrada
+
     Parameters
     ----------
     param_nombre : str : Nombre del archivo a leer
 
     Returns
     -------
+    {'datos': datos_imagen, 'dimensiones': archivo_imagen.size}
 
     Debugging
     ---------
@@ -62,7 +64,7 @@ def f_reescribir_imagen(param_data, param_dims, param_nombre):
 
     Returns
     -------
-    1
+    nueva_imagen.save(directorio + '/imagenes/resultados/' + param_nombre)
 
     Debugging
     ---------
@@ -96,7 +98,7 @@ def distancia(param_a, param_b, param_d):
 
     Returns
     -------
-    distancia : int : valor de distancia entre vectores
+    np.linalg.norm(param_b - param_a)
 
     Debugging
     ---------
