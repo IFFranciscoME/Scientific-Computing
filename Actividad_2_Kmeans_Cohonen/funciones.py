@@ -42,11 +42,11 @@ def f_entrada_imagenes(param_nombre):
     # proceso para hacer reshape y ordenar los datos en N renglones y 3 columnas
     total = archivo_imagen.size[0]*archivo_imagen.size[1]
     # reacomodar para tener todos los datos en una matriz vertical
-    imagen = np.reshape(imagen, (total, 3))
+    datos_imagen = np.reshape(imagen, (total, 3))
     # crear un array de 0s y 4 columnas
-    datos_imagen = np.zeros((total, 4))
+    # datos_imagen = np.zeros((total, 4))
     # escribir los datos de los pixeles (3 componentes) y una 4 para apoyo posterior
-    datos_imagen[:, :-1] = imagen
+    # datos_imagen[:, :-1] = imagen
 
     return {'datos': datos_imagen, 'dimensiones': archivo_imagen.size}
 
@@ -144,12 +144,11 @@ def f_kohonen(param_data, param_k, param_t, param_p):
             for i in range(len(nvo_centroide)):
                 centroides[cent_dato][i] = nvo_centroide[i]
 
-            # criterio para decimales, truncarlos a 0
-             centroides = np.trunc(centroides)
+            # criterio para decimales, truncarlos a
+            centroides = np.trunc(centroides)
 
             # calcular diferencia de errores
             error = abs(centroides_o - centroides).sum()
-
             print(error)
 
         print('centroides originales fueron: ')
@@ -161,6 +160,34 @@ def f_kohonen(param_data, param_k, param_t, param_p):
     # kohonen_data
 
     return 1
+
+
+# -- --------------------------------------- FUNCION: Calculo de distancia entre vectpres -- #
+# -- ------------------------------------------------------------------------------------ -- #
+
+def distancia(param_a, param_b):
+    """
+
+    Parameters
+    ----------
+    param_a : np.array : vector a
+    param_b : np.array : vector b
+
+    Returns
+    -------
+    distancia : int : valor de distancia entre vectores
+
+    Debugging
+    ---------
+    param_a
+    param_b
+
+    """
+
+    # calculo de distancia euclideana
+    dist = np.linalg.norm(param_b - param_a)
+
+    return dist
 
 
 # -- --------------------------------------------------------- FUNCION: Metodo de K-Means -- #
@@ -186,79 +213,65 @@ def f_kmeans(param_data, param_k, param_iter):
 
     """
 
-    # copiar datos originales en objeto nuevo quintando la 4ta columna
-    data = param_data.copy()[:, :-1]
+    # datos de entrada
+    datos = param_data.copy().astype(int)
+
+    # agregar una 4ta columna para info de centroides
+    datos = np.append(datos, np.zeros((datos.shape[0], 1), dtype=int), axis=1)
 
     # dimensiones
-    m = data.shape[0]
-    n = data.shape[1]
+    m = datos.shape[0]
+    n = datos.shape[1]
 
     # objeto vacio para almacenar n cantidad de centroides
     centroides = np.array([]).reshape(n, 0)
 
-    # objeto vacio para guardar todos los resultados de las iteraciones
-    k_means_data = dict()
-
-    # -------------------------------------------------------------------------------------- #
-
     # crear una param_k cantidad de centroides aleatorios
     for _ in range(param_k):
-        centroides = np.c_[centroides, data[random.randint(0, m - 1)]]
-    print(centroides)
+        centroides = np.c_[centroides, datos[random.randint(0, m)]]
 
-    # -------------------------------------------------------------------------------------- #
+    # acomodar con transpuesta
+    centroides = centroides.T
 
-    # iteraciones de busqueda y ajuste
-    # iteraciones de busqueda y ajuste
-    for i in range(param_iter):
+    # agregar una 4ta columna para info de centroides
+    # datos = np.append(datos, np.zeros((m, 1), dtype=int), axis=1)
 
-        # objeto con distancias euclidianas
-        euclidianas = np.array([]).reshape(m, 0)
+    # banderas para while
+    iteracion = 0
+    error = 2
 
-        # para cada centroide calcular las distancias a cada punto
-        for k in range(param_k):
-            # distancia euclidiana de cada punto con cada centroide
-            distancias = np.sum((data - centroides[:, k]) ** 2, axis=1)
-            # concatenar para cada punto sus distancias con cada centroide
-            euclidianas = np.c_[euclidianas, distancias]
+    while error > 1:
+        iteracion += 1
+        centroides_n = copy.deepcopy(centroides)
+        v = 0
 
-        # encontrar indice de columna con la distancia minima de cada punto a cada centroide
-        cent_ind = np.argmin(euclidianas, axis=1) + 1
-        cent_data = {}
+        # distancia de cada dato a los centroides
+        for i_dato in datos:
+            # i_dato = datos[0]
+            distancias = []
+            [distancias.append(distancia(param_a=i_dato, param_b=m)) for m in centroides]
 
-        # una lista de arrays, uno para cada centroide
-        for lista in range(param_k):
-            cent_data[lista + 1] = np.array([]).reshape(n, 0)
+            # agregar informacion de centroide correspondiente al dato
+            datos[v, n-1] = distancias.index(min(distancias))
+            v += 1
 
-        # asociar datos a su centroide y concatenar todos los centroides
-        for con in range(m):
-            cent_data[cent_ind[con]] = np.c_[cent_data[cent_ind[con]], data[con]]
+        # asignacion de centroides con el promedio de los datos acomodados
+        for j in range(param_k):
+            for c in range(n):
+                centroides[j, c] = np.mean(datos[datos[:, n-1] == j][:, c])
 
-        # reacomodo de datos y parametro de k-mean
-        for dato in range(param_k):
-            # dar formato a arrays de datos en centroides
-            cent_data[dato + 1] = cent_data[dato + 1].T
-            # calcular el promedio de distancias de datos al centroide para cada centroide
-            centroides[:, dato] = np.mean(cent_data[dato + 1], axis=0)
+        # calculo de error
+        error = np.nanmax(abs(centroides_n - centroides))
 
-        # reacomodo de valores para centroides
-        centroides = centroides.T
+        # impresiones de control
+        print('\n')
+        print('iteracion: ', iteracion)
+        print('error: ', error)
 
-        # para llaves iguales, les actualiza los valores
-        k_means_data.update(cent_data)
+    # reasignar valores de centroides a sus respectivos datos
+    datos = [centroides[int(i_dato[n-1])] for i_dato in datos]
 
-    # dataframe final
-    df_final = pd.concat([pd.concat([pd.DataFrame(k_means_data[i]),
-                                     pd.DataFrame({'centroide': [i]*len(k_means_data[i])})],
-                                    axis=1) for i in range(1, len(centroides)+1)])
-
-    cents = list(k_means_data.keys())
-
-    for i in cents:
-        df_final.iloc[np.where(df_final['centroide'] == i)[0], 0:3] = list(centroides[i-1])
-    df_final.reset_index(drop=True, inplace=True)
-
-    return {'datos': df_final, 'centroides': centroides}
+    return {'datos': datos, 'centroides': centroides}
 
 
 # -- --------------------------------------------------------- FUNCION: Metodo de K-Means -- #
