@@ -17,8 +17,7 @@ de rutas que fueron revisadas.
 configuraciones. De nuevo escriba las configuraciones utilizadas y el número de rutas revisado
 """
 
-import numpy as np
-import random
-import os
 import pandas as pd
-import matplotlib.pyplot as plt
+
+# leer datos de entrada
+datos = pd.read_excel('archivos/dist.xlsx')
