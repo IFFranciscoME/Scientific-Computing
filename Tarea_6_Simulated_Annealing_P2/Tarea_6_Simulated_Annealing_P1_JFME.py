@@ -5,11 +5,6 @@
 # -- repositorio: https://github.com/IFFranciscoME/IDI_II_GIT
 # -- ------------------------------------------------------------------------------------ -- #
 
-"""
-
-
-"""
-
 import pandas as pd
 import numpy as np
 import random
@@ -36,7 +31,6 @@ rutas_varias = []
 # cantidad de corridas del algoritmo
 n_corridas = 100
 
-
 # -- Parametros SA
 # datos vecinos revisados aleatoriamente
 N = 1680
@@ -57,18 +51,21 @@ for j in range(0, n_corridas):
     # contador para permutaciones maximas
     contador = 0
 
+    # -- Para ejercicio 5
     # Inicio: Copenhagen | Fin: lynge
-    ciudad_inicio = list(ciudades).index('Copenhagen')
-    ciudad_fin = list(ciudades).index('Lynge')
+    # ciudad_inicio = list(ciudades).index('Copenhagen')
+    # ciudad_fin = list(ciudades).index('Lynge')
 
     # configuracion inicial aleatoria
     recorrido_rand = list(np.arange(len(np_data[:, 0])))
     random.shuffle(recorrido_rand)
     C1 = recorrido_rand
-    C1.remove(ciudad_inicio)
-    C1.remove(ciudad_fin)
-    C1.insert(0, ciudad_inicio)
-    C1.append(ciudad_fin)
+
+    # -- Para ejercicio 5
+    # C1.remove(ciudad_inicio)
+    # C1.remove(ciudad_fin)
+    # C1.insert(0, ciudad_inicio)
+    # C1.append(ciudad_fin)
 
     # hacer ciclica o no ciclica la ruta
     # agregar primer numero al ultimo para C1 y para C2
@@ -132,10 +129,10 @@ for j in range(0, n_corridas):
 
         # print(itera_t)
         # (1)
-        # T_iter = T_iter*factor_t
+        T_iter = T_iter*factor_t
 
         # (2)
-        T_iter = T_iter/np.log(n_iter)
+        # T_iter = T_iter/np.log(n_iter)
 
         # (3)
         # T_iter = math.exp(-itera_t)*T_iter
