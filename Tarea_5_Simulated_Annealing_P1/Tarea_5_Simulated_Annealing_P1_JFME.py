@@ -46,11 +46,11 @@ n_corridas = 100
 
 # -- Parametros SA
 # datos vecinos revisados aleatoriamente
-N = 400
+N = 30000
 # T
-T = 300
+T = 50
 # factor de disminucion para T
-factor_t = 0.99
+factor_t = 0.5
 # --
 
 # para controlar permutaciones maximas
@@ -79,9 +79,11 @@ for j in range(0, n_corridas):
 
     # valor inicial de Temperatura
     T_iter = T
+    itera_t = 0
 
     # (10) mientras T sea  1 se repetira el proceso
     while T_iter > 1:
+        itera_t += 1
         # (p8) cantidad de configuraciones de parametros "cercanas" en los que se busca
         for n_iter in range(0, N):
             # n_iter = 0
@@ -102,7 +104,7 @@ for j in range(0, n_corridas):
             contador += 2
 
             # (p5) calcular decremento de medida de error
-            q = math.e**((E1-E2)/T)
+            q = math.e ** ((E1 - E2) / T)
 
             # (p6 y p7) aceptar o rechazar aleatoriamente la config de parametros nueva
             p = np.random.random(1)[0]
@@ -115,7 +117,16 @@ for j in range(0, n_corridas):
             distancias.append(sum([np_data[C1[i]][C1[i+1]] for i in range(0, len(C1)-1)]))
 
         # 9.- Disminuya en 10% el valor de T
-        T_iter = T_iter*factor_t
+
+        print(itera_t)
+        # (1)
+        # T_iter = T_iter*factor_t
+
+        # (2)
+        # T_iter = T_iter/np.log(n_iter)
+
+        # (3)
+        T_iter = math.exp(-itera_t)*T_iter
 
     print('\n corrida numero = ', j)
     id_distancia_minima = np.argmin(distancias)
@@ -145,7 +156,7 @@ print('desviacion estandar de distancias minimas: ', round(desv_est, 2))
 
 # PRUEBA 1
 # -----------------------------------
-# Configuracion: T = 1000  | N = 3  | factor_t = 0.8
+# Configuracion: T = 1000  | N = 3  | factor_t = 0.8 | T_iter = T_iter*factor_t
 # permutaciones maximas:  201
 # rutas revisadas por iteracion:  186
 # rutas totales revisadas en  100  iteraciones:  18414
@@ -156,7 +167,7 @@ print('desviacion estandar de distancias minimas: ', round(desv_est, 2))
 
 # PRUEBA 2
 # -----------------------------------
-# Configuracion: T = 1000  | N = 1  | factor_t = 0.9
+# Configuracion: T = 1000  | N = 1  | factor_t = 0.9 | T_iter = T_iter*factor_t
 # permutaciones maximas:  201
 # rutas revisadas por iteracion:  132
 # rutas totales revisadas en  100  iteraciones:  13068
@@ -167,7 +178,7 @@ print('desviacion estandar de distancias minimas: ', round(desv_est, 2))
 
 # PRUEBA 3
 # -----------------------------------
-# Configuracion: T = 1000  | N = 5  | factor_t = 0.7
+# Configuracion: T = 1000  | N = 5  | factor_t = 0.7 | T_iter = T_iter*factor_t
 # permutaciones maximas:  201
 # rutas revisadas por iteracion:  200
 # rutas totales revisadas en  100  iteraciones:  19800
@@ -178,7 +189,7 @@ print('desviacion estandar de distancias minimas: ', round(desv_est, 2))
 
 # PRUEBA 4
 # -----------------------------------
-# Configuracion: T = 1000  | N = 8  | factor_t = 0.99
+# Configuracion: T = 1000  | N = 8  | factor_t = 0.99 | T_iter = T_iter*factor_t
 # permutaciones maximas:  201
 # rutas revisadas por iteracion:  11008
 # rutas totales revisadas en  100  iteraciones:  1089792
@@ -191,7 +202,7 @@ print('desviacion estandar de distancias minimas: ', round(desv_est, 2))
 
 # PRUEBA 1
 # -----------------------------------
-# Configuracion: T = 1000  | N = 8  | factor_t = 0.99
+# Configuracion: T = 1000  | N = 8  | factor_t = 0.99 | T_iter = T_iter*factor_t
 # permutaciones maximas:  12164510040883200
 # rutas revisadas por iteracion:  11008
 # rutas totales revisadas en  100  iteraciones:  1089792
@@ -204,7 +215,7 @@ print('desviacion estandar de distancias minimas: ', round(desv_est, 2))
 
 # PRUEBA 2
 # -----------------------------------
-# Configuracion: T = 1000  | N = 16  | factor_t = 0.9
+# Configuracion: T = 1000  | N = 16  | factor_t = 0.9 | T_iter = T_iter*factor_t
 # permutaciones maximas:  12164510040883200
 # rutas revisadas por iteracion:  2112
 # rutas totales revisadas en  100  iteraciones:  209088
@@ -217,7 +228,7 @@ print('desviacion estandar de distancias minimas: ', round(desv_est, 2))
 
 # PRUEBA 3
 # -----------------------------------
-# Configuracion: T = 500  | N = 16  | factor_t = 0.9
+# Configuracion: T = 500  | N = 16  | factor_t = 0.9 | T_iter = T_iter*factor_t
 # permutaciones maximas:  12164510040883200
 # rutas revisadas por iteracion:  1888
 # rutas totales revisadas en  100  iteraciones:  186912
@@ -230,7 +241,7 @@ print('desviacion estandar de distancias minimas: ', round(desv_est, 2))
 
 # PRUEBA 4
 # -----------------------------------
-# Configuracion: T = 250  | N = 32  | factor_t = 0.99
+# Configuracion: T = 250  | N = 32  | factor_t = 0.99 | T_iter = T_iter*factor_t
 # permutaciones maximas:  12164510040883200
 # rutas revisadas por iteracion:  35200
 # rutas totales revisadas en  100  iteraciones:  3484800
@@ -241,15 +252,42 @@ print('desviacion estandar de distancias minimas: ', round(desv_est, 2))
 # distancia de la ruta mínima:  1560.7740000000001
 # desviacion estandar de distancias minimas:  70.4
 
-# PRUEBA 5 (Tardó aprox 20 mins)
+# PRUEBA 5
 # -----------------------------------
-# Configuracion: T = 300  | N = 400  | factor_t = 0.99
+# Configuracion: T = 500  | N = 100  | factor_t = 0.99 | T_iter = T_iter/np.log(n_iter)
 # permutaciones maximas:  12164510040883200
-# rutas revisadas por iteracion:  454400
-# rutas totales revisadas en  100  iteraciones:  44985600
-# la ruta con distancia minima:  ['Atengo', 'Atenguillo', 'Amatitán', 'Ameca',
-# 'Antonio Escobedo', 'Ahuisculco', 'Arandas', 'Allende', 'Atotonilco el Alto',
-# 'Ahuatlán', 'Acatic', 'Altus Bosques', 'Acatlán de Juárez', 'Amacueca', 'Atacco',
-# 'Alista', 'Atemajac de Brizuela', 'Atequiza', 'Ajijic', 'Ahualulco de Mercado', 'Atengo']
-# distancia de la ruta mínima:  1536.8429999999998
-# desviacion estandar de distancias minimas:  54.54
+# rutas revisadas por iteracion:  1000
+# rutas totales revisadas en  100  iteraciones:  99000
+# la ruta con distancia minima:  ['Ahuisculco', 'Acatlán de Juárez', 'Arandas', 'Allende',
+# 'Atotonilco el Alto', 'Ahuatlán', 'Alista', 'Atacco', 'Altus Bosques',
+# 'Atemajac de Brizuela', 'Amacueca', 'Acatic', 'Ajijic', 'Atequiza', 'Ahualulco de Mercado',
+# 'Antonio Escobedo', 'Atengo', 'Ameca', 'Atenguillo', 'Amatitán', 'Ahuisculco']
+# distancia de la ruta mínima:  1808.8590000000002
+# desviacion estandar de distancias minimas:  132.58
+
+# PRUEBA 6
+# -----------------------------------
+# Configuracion: T = 500  | N = 1000  | factor_t = 0.8 | T_iter =
+#                                                           math.exp(-factor_t*itera_t)*T_iter
+# permutaciones maximas:  12164510040883200
+# rutas revisadas por iteracion:  8000
+# rutas totales revisadas en  100  iteraciones:  792000
+# la ruta con distancia minima:  ['Arandas', 'Allende', 'Ahuatlán', 'Acatic', 'Atequiza',
+# 'Ajijic', 'Acatlán de Juárez', 'Ahuisculco', 'Ahualulco de Mercado', 'Antonio Escobedo',
+# 'Amatitán', 'Ameca', 'Atenguillo', 'Atengo', 'Alista', 'Atacco', 'Amacueca',
+# 'Atemajac de Brizuela', 'Altus Bosques', 'Atotonilco el Alto', 'Arandas']
+# distancia de la ruta mínima:  1328.8690000000004
+# desviacion estandar de distancias minimas:  111.7
+
+# PRUEBA 7
+# -----------------------------------
+# Configuracion: T = 50  | N = 20000  | factor_t = 0.8 | T_iter = math.exp(-itera_t)*T_iter
+# permutaciones maximas:  12164510040883200
+# rutas revisadas por iteracion:  120000
+# rutas totales revisadas en  100  iteraciones:  11880000
+# la ruta con distancia minima:  ['Atemajac de Brizuela', 'Atacco', 'Alista', 'Atengo',
+# 'Atenguillo', 'Ameca', 'Ahualulco de Mercado', 'Antonio Escobedo', 'Amatitán',
+# 'Ahuisculco', 'Altus Bosques', 'Acatic', 'Arandas', 'Allende', 'Atotonilco el Alto',
+# 'Ahuatlán', 'Atequiza', 'Ajijic', 'Acatlán de Juárez', 'Amacueca', 'Atemajac de Brizuela']
+# distancia de la ruta mínima:  1198.693
+# desviacion estandar de distancias minimas:  33.05
