@@ -33,7 +33,7 @@ n_corridas = 100
 
 # -- Parametros SA
 # datos vecinos revisados aleatoriamente
-N = 1680
+N = 280
 # T
 T = 25
 # factor de disminucion para T
@@ -171,10 +171,10 @@ for j in range(0, n_corridas):
     print('distancia minima encontrada: ', distancias[distancia_minima])
     ruta_distancia_minima = rutas[distancia_minima]
     ciudades = list(ciudades)
-    recorrido = [ciudades[ruta_distancia_minima[c]] for c in range(0, len(ciudades)+1)]
+    # recorrido = [ciudades[ruta_distancia_minima[c]] for c in range(0, len(ciudades)+1)]
 
     # Ejercicio 5
-    # recorrido = [ciudades[ruta_distancia_minima[c]] for c in range(0, len(ciudades))]
+    recorrido = [ciudades[ruta_distancia_minima[c]] for c in range(0, len(ciudades))]
 
     print('el recorrido fue: ', recorrido)
 
