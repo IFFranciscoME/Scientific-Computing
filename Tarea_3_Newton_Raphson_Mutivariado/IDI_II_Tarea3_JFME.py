@@ -69,16 +69,19 @@ class NewtonRaphson:
         # valores iniciales
         valores_iniciales = sp.Matrix(valores_iniciales)
 
-        for _ in range(15):
+        for iteraciones in range(15):
             valores = {}
             for i in range(len(valores_iniciales)):
                 valores[variables[i]] = valores_iniciales[i]
             x_subs = self.mult.subs(zip(variables, valores_iniciales))
 
+        return x_subs
 
-# funciones
+
 # instanciar clase con sus parametros de inicializacion
 funciones = [c1_f, c1_g]
 variables = [x, y]
 valores_iniciales = [2, 0.5]
-ejercicio_1 = NewtonRaphson([c1_f, c1_g], [x, y])
+ejercicio_1 = NewtonRaphson(funciones, variables)
+ejercicio_1.metodo(valores_iniciales, variables, X, 10e-3)
+
