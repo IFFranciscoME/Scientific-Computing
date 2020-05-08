@@ -214,10 +214,12 @@ validacion = perceptron.clasificar(train[:, 0:-1])
 df_data_val = pd.DataFrame(train.astype(int), columns=['x0', 'x1', 'x2', 'x3', 'y_train'])
 df_data_val['y_val'] = pd.DataFrame(np.vstack(validacion))
 
+# imprimir tabla de validacion de proceso de entrenamiento
 print(df_data_val)
 # -- -------------------------------------------------------------- Proceso de prediccion -- #
 prediccion = perceptron.clasificar(test[:, 0:-1])
 test[:, -1] = prediccion
 df_test = pd.DataFrame(test.astype(int), columns=['x0', 'x1', 'x2', 'x3', 'y_test'])
 
+# imprimir tabla con resultados finales de datos faltantes en tabla de verdad XOR
 print(df_test)
