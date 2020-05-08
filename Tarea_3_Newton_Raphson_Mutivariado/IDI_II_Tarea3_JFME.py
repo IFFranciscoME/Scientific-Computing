@@ -55,3 +55,30 @@ class NewtonRaphson:
         self.jacobiana_inv = self.jacobiana.inv()
         # operacion de multiplicacion de inversa de jacobiana por matriz del sistema
         self.mult = self.jacobiana_inv * matriz_sistema
+
+    def metodo(self, valores_iniciales, variables, matrix_symbol, error):
+        """
+        Parameters
+        ----------
+        valores_iniciales
+        variables
+        matrix_symbol
+        error
+        """
+
+        # valores iniciales
+        valores_iniciales = sp.Matrix(valores_iniciales)
+
+        for _ in range(15):
+            valores = {}
+            for i in range(len(valores_iniciales)):
+                valores[variables[i]] = valores_iniciales[i]
+            x_subs = self.mult.subs(zip(variables, valores_iniciales))
+
+
+# funciones
+# instanciar clase con sus parametros de inicializacion
+funciones = [c1_f, c1_g]
+variables = [x, y]
+valores_iniciales = [2, 0.5]
+ejercicio_1 = NewtonRaphson([c1_f, c1_g], [x, y])
