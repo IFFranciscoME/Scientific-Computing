@@ -46,7 +46,7 @@ def newton_raphson(param_sis, param_ini, param_error):
     ---------
     param_ini = [4, 2, -3]
     param_sis = [c1_f, c1_g, c1_h]
-    param_error = 10e-2
+    param_error = 10e-3
 
     """
 
@@ -57,85 +57,152 @@ def newton_raphson(param_sis, param_ini, param_error):
     mult = jacobian_inv * sistema
 
     error = float("inf")
-    valores = -mult.subs(list(zip(variables, param_ini))) + np_param_ini
-    error = np.sum(-mult.subs(list(zip(variables, param_ini))))
-
     iteraciones = 0
+    sumadores = np_param_ini
 
-    while error > param_error:
+    # valores = -mult.subs(list(zip(variables, param_ini))) + np_param_ini
+    # error = np.sum(-mult.subs(list(zip(variables, param_ini))))
+    # print('error previo', error)
+
+    while abs(error) > param_error:
 
         iteraciones += 1
-        valores = -mult.subs(list(zip(variables, valores)))
-        valores_n = valores + np_param_ini
-        error = np.sum(valores)
-        valores = valores_n
+        valores = -mult.subs(list(zip(variables, sumadores))) + sumadores
+        sumadores = valores
+        error = np.sum(mult.subs(list(zip(variables, valores))))
 
-    valores = [round(valores[i], 4) for i in range(0, len(valores))]
+    valores = [round(sumadores[i], 4) for i in range(0, len(sumadores))]
 
-    return {'solucion': valores, 'iteraciones': iteraciones}
+    return {'parametros': param_ini, 'solucion': valores, 'iteraciones': iteraciones}
 
 
-# -- ----------------------------------------------------------------------------- Caso 1 -- #
+# -- ------------------------------------------------------------------- Caso 2 variables -- #
 
 # Sistema de ecuaciones
 c1_f = 'x**2 + y - 1'
 c1_g = 'x - 2*y**2'
-variables = [x, y]
 
-# plot expandido para vision general
-plot3d(c1_f, c1_g)
-
-# Buscar solucion al sistema
-ejercicio_1 = newton_raphson(param_sis=[c1_f, c1_g],
-                             param_ini=[0, 0],
-                             param_error=1e-3)
-
-# -- Resultados
-# Valores Iniciales:
-# [0, 0]
-
-# Itearciones:
-print(ejercicio_1['iteraciones'])
-
-# Solucion:
-print(ejercicio_1['solucion'])
-
-# plot focalizado a resultados
-plot3d(c1_f, c1_g, (x, -1, 0), (y, -3, -0.5))
-
-# -- ----------------------------------------------------------------------------- Caso 2 -- #
-
-# ecuaciones
+# Sistema de ecuaciones
 c2_f = 'x**2 - 10*x + y**2 + 5'
 c2_g = 'x*y**2 + x - 10*y + 8'
 
-# plot expandido para vision general
-plot3d(c2_f, c2_g)
+# variables simbolicas
+variables = [x, y]
+
+# plots expandido para vision general
+plot3d(c1_f, c1_g)
 
 # Buscar solucion al sistema
-ejercicio_2 = newton_raphson(param_sis=[c2_f, c2_g],
-                             param_ini=[0, 0],
-                             param_error=1e-14)
-# valores de variables
-print(ejercicio_2)
+ejercicio = newton_raphson(param_sis=[c2_f, c2_g],
+                             param_ini=[15, -15],
+                             param_error=10e-3)
 
-# plot focalizado
-plot3d(c1_f, c1_g, (x, -1, 0), (y, -3, -0.5))
+# Parametros:
+print('Parametros Iniciales: ', ejercicio['parametros'])
+# Solucion:
+print('Solucion: ', ejercicio['solucion'])
+# Itearciones:
+print('Iteraciones: ', ejercicio['iteraciones'])
+
+# Comprobacion
+solucion = np.vstack(np.array(ejercicio['solucion']))
+sistema = sp.Matrix([c1_f, c1_g])
+res = sistema.subs(list(zip(variables, solucion)))
+print('comprobacion:\n', np.array(res))
+
+# plot focalizado a resultados
+plot3d(c1_f, c1_g,
+       (x, solucion[0][0]*.90, solucion[0][0]*1.10),
+       (y, solucion[1][0]*.90, solucion[1][0]*1.10))
+
+
+# -- ----------------------------------------------------------------------- EJERCICIO 1 -- #
+# c1_f = 'x**2 + y - 1'
+# c1_g = 'x - 2*y**2'
+
+# -- [7.5, -7.5]
+# Parametros Iniciales:  [7.5, -7.5]
+# Solucion:  [1.3524, -0.8262]
+# Iteraciones:  5
+# comprobacion:
+#  [[0.00278289692141698]
+#  [-0.0128209609538317]]
+
+# -- [0, 0]
+# Parametros Iniciales:  [0, 0]
+# Solucion:  [0.6552, 0.5738]
+# Iteraciones:  5
+# comprobacion:
+#  [[0.00308243022300303]
+#  [-0.00329374719876796]]
+
+# -- ----------------------------------------------------------------------- EJERCICIO 2 -- #
+# c2_f = 'x**2 - 10*x + y**2 + 5'
+# c2_g = 'x*y**2 + x - 10*y + 8'
+
+# -- [-7.5, 0]
+# Parametros iniciales: [-7.5, 0]
+# iteraciones:  4
+# solucion:  [0.6221, 0.9141]
+# comprobacion:
+#  [[0.00158113479847088]
+#  [0.000909367466521260]]
 
 # -- ----------------------------------------------------------------------------- Caso 3 -- #
-# c3_f = 'x + y - z + 2'
-# c3_g = 'x**2 + y'
-# c3_h = 'z - y**2 - 1'
+c3_f = 'x + y - z + 2'
+c3_g = 'x**2 + y'
+c3_h = 'z - y**2 - 1'
+variables = [x, y, z]
+
+# Buscar solucion al sistema
+ejercicio_3 = newton_raphson(param_sis=[c3_f, c3_g, c3_h],
+                             param_ini=[1, -1, 0],
+                             param_error=10e-3)
+
+# Parametros:
+print('Parametros Iniciales: ', ejercicio_3['parametros'])
+
+# Solucion:
+print('solucion: ', ejercicio_3['solucion'])
+
+# Itearciones:
+print('iteraciones: ', ejercicio_3['iteraciones'])
+
+# Comprobacion
+solucion = np.vstack(np.array(ejercicio_3['solucion']))
+sistema = sp.Matrix([c3_f, c3_g, c3_h])
+res = sistema.subs(list(zip(variables, solucion)))
+print('comprobacion:\n', np.array(res))
+
+# -- [-1, -1, 2]
+# Parametros Iniciales:  [-1, -1, 2]
+# solucion:  [-0.5699, -0.3247, 1.1054]
+# iteraciones:  3
+# comprobacion:
+#  [[0]
+#  [8.71925149112940e-5]
+#  [-2.96161160804331e-5]]
+
+# -- [1, -1, 0]
+# Parametros Iniciales:  [1, -1, 0]
+# solucion:  [1, -1, 2.00000000000000]
+# iteraciones:  1
+# comprobacion:
+#  [[0]
+#  [0]
+#  [0]]
 
 # -- ----------------------------------------------------------------------- Caso Ejemplo -- #
 
-c1_f = 'x**3 + y**3 - z**3 - 129'
-c1_g = 'x**2 + y**2 - z**2 - 9.75'
-c1_h = 'x + y - z - 9.49'
-
-variables = [x, y, z]
-
-ejercicio_1 = newton_raphson(param_sis=[c1_f, c1_g, c1_h],
-                             param_ini=[4, 2, -3],
-                             param_error=1e-14)
-print(ejercicio_1)
+# c1_f = 'x**3 + y**3 - z**3 - 129'
+# c1_g = 'x**2 + y**2 - z**2 - 9.75'
+# c1_h = 'x + y - z - 9.49'
+#
+# # [4.3621, 1.6619, -3.4660]
+#
+# variables = [x, y, z]
+#
+# ejercicio_1 = newton_raphson(param_sis=[c1_f, c1_g, c1_h],
+#                              param_ini=[4, 2, -3],
+#                              param_error=10e-3)
+# print(ejercicio_1)
