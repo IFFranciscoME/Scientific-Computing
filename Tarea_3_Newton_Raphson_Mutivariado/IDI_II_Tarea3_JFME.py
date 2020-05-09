@@ -50,27 +50,34 @@ def newton_raphson(param_sis, param_ini, param_error):
 
     """
 
+    # acomodar los parametros iniciales verticalmente
     np_param_ini = np.vstack(np.array(param_ini))
+    # representar al sistema de ecuaciones en una matriz simbolica
     sistema = sp.Matrix(param_sis)
+    # calcular la matriz jacobiana del sistema para solucionar una ecuacion tipo Ax=b
     jacobian = sistema.jacobian(variables)
+    # calcular la inversa de la jacobiana
     jacobian_inv = jacobian.inv()
+    # multiplicar
     mult = jacobian_inv * sistema
-
+    # Error inicial
     error = float("inf")
+    # contador de iteraciones
     iteraciones = 0
     sumadores = np_param_ini
 
-    # valores = -mult.subs(list(zip(variables, param_ini))) + np_param_ini
-    # error = np.sum(-mult.subs(list(zip(variables, param_ini))))
-    # print('error previo', error)
-
+    # hacer ciclo hasta sobrepasar medida de error
     while abs(error) > param_error:
-
+        # contar iteraciones hechas
         iteraciones += 1
+        # sustituir en ecuacion x = 1/A * B
         valores = -mult.subs(list(zip(variables, sumadores))) + sumadores
+        # guardar valores encontrados provisionales
         sumadores = valores
+        # calcular medida de error
         error = np.sum(mult.subs(list(zip(variables, valores))))
 
+    # redondear a 4 de precision
     valores = [round(sumadores[i], 4) for i in range(0, len(sumadores))]
 
     return {'parametros': param_ini, 'solucion': valores, 'iteraciones': iteraciones}
@@ -90,11 +97,11 @@ c2_g = 'x*y**2 + x - 10*y + 8'
 variables = [x, y]
 
 # plots expandido para vision general
-plot3d(c1_f, c1_g)
+# plot3d(c1_f, c1_g)
 
 # Buscar solucion al sistema
 ejercicio = newton_raphson(param_sis=[c2_f, c2_g],
-                             param_ini=[15, -15],
+                             param_ini=[10, 10],
                              param_error=10e-3)
 
 # Parametros:
@@ -106,7 +113,7 @@ print('Iteraciones: ', ejercicio['iteraciones'])
 
 # Comprobacion
 solucion = np.vstack(np.array(ejercicio['solucion']))
-sistema = sp.Matrix([c1_f, c1_g])
+sistema = sp.Matrix([c2_f, c2_g])
 res = sistema.subs(list(zip(variables, solucion)))
 print('comprobacion:\n', np.array(res))
 
@@ -148,7 +155,16 @@ plot3d(c1_f, c1_g,
 #  [[0.00158113479847088]
 #  [0.000909367466521260]]
 
-# -- ----------------------------------------------------------------------------- Caso 3 -- #
+# -- [10, 10]
+# Parametros Iniciales:  [10, 10]
+# Solucion:  [2.0758, 3.3838]
+# Iteraciones:  31
+# comprobacion:
+#  [[0.00104069258668460]
+#  [0.00594772052233594]]
+
+
+# -- ------------------------------------------------------------------- Caso 3 variables -- #
 c3_f = 'x + y - z + 2'
 c3_g = 'x**2 + y'
 c3_h = 'z - y**2 - 1'
@@ -191,18 +207,3 @@ print('comprobacion:\n', np.array(res))
 #  [[0]
 #  [0]
 #  [0]]
-
-# -- ----------------------------------------------------------------------- Caso Ejemplo -- #
-
-# c1_f = 'x**3 + y**3 - z**3 - 129'
-# c1_g = 'x**2 + y**2 - z**2 - 9.75'
-# c1_h = 'x + y - z - 9.49'
-#
-# # [4.3621, 1.6619, -3.4660]
-#
-# variables = [x, y, z]
-#
-# ejercicio_1 = newton_raphson(param_sis=[c1_f, c1_g, c1_h],
-#                              param_ini=[4, 2, -3],
-#                              param_error=10e-3)
-# print(ejercicio_1)
