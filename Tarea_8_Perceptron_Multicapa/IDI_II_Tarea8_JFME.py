@@ -9,21 +9,26 @@ import pandas as pd
 import numpy as np
 
 # Leer datos de entrada
-datos = pd.read_excel('tabla_para_probar.xlsx')
+datos = pd.read_excel('tabla_para_probar.xlsx', sheet_name='question_12')
 
 # Separar datos de entrenamiento y datos de prueba
-datos_test = datos[(datos['d1'] == '?') | (datos['d2'] == '?')]
+datos_test = datos[(datos['d1'] == '?')]
+# datos_test = datos[(datos['d1'] == '?') | (datos['d2'] == '?')]
 datos_test.reset_index(inplace=True, drop=True)
-datos_train = datos[(datos['d1'] != '?') | (datos['d2'] != '?')]
+datos_train = datos[(datos['d1'] != '?')]
+# datos_train = datos[(datos['d1'] != '?') | (datos['d2'] != '?')]
 datos_train.reset_index(inplace=True, drop=True)
 
 # -- Entrenamiento
-datos_x = np.array(datos_train.iloc[:, 0:-2], dtype=int)
-datos_d = np.array(datos_train.iloc[:, -2:], dtype=int)
+datos_x = np.array(pd.DataFrame(datos_train.iloc[:, 0], dtype=float))
+datos_d = np.array(pd.DataFrame(datos_train.iloc[:, 1], dtype=float))
+# datos_x = np.array(datos_train.iloc[:, 0:-2], dtype=int)
+# datos_d = np.array(datos_train.iloc[:, -2:], dtype=int)
 
 # -- PERCEPTRON MULTICAPA
 # [Entradas, Neuronas Ocultas, Salidas, Alfa]
-params = [4, 8, 2, 2.5]
+params = [1, 5, 1, .5]
+# params = [4, 8, 2, 2.5]
 
 
 # ------------------------------------------------------------------------------- Proceso -- #
@@ -47,7 +52,7 @@ def funcion_activacion(param_f, param_x, param_alfa):
 
     """
     if param_f == 'sigmoid':
-        return 1 / (1 + np.e ** (-param_alfa * param_x))
+        return 1 / (1 + np.exp(-param_alfa * param_x))
     else:
         print('funcion no reconocida')
 
@@ -83,7 +88,8 @@ while error > 1e-6:
         # salida
         y = funcion_activacion(param_f='sigmoid', param_x=net_o, param_alfa=params[3])
         # print(y.T)
-        print('d1 = ' + str(round(y[0][0], 2)) + ' | d2 = ' + str(round(y[1][0], 2)))
+        print('d1 = ' + str(y[0][0]))
+        # print('d1 = ' + str(round(y[0][0], 2)) + ' | d2 = ' + str(round(y[1][0], 2)))
 
         # -- BACKWARD
         # errores de la capa de salida
@@ -114,10 +120,12 @@ print(w_o)
 # -- ------------------------------------------------------------- PREDICCION CON PRUEBAS -- #
 
 # -- Prueba
-datos_x = np.array(datos_test.iloc[:, 0:-2], dtype=int)
+datos_x = np.array(pd.DataFrame(datos_test.iloc[:, 0], dtype=float))
+# datos_x = np.array(datos_test.iloc[:, 0:-2], dtype=int)
 # datos_d = np.array(datos_test.iloc[:, -2:], dtype=int)
 
 for q in range(len(datos_x)):
+    # q = 0
     # vector Q de N entradas
     x_j = datos_x[q, :][np.newaxis, :]
 
@@ -131,7 +139,8 @@ for q in range(len(datos_x)):
     # salida
     y = funcion_activacion(param_f='sigmoid', param_x=net_o, param_alfa=params[3])
     # print(y.T)
-    print('d1 = ' + str(round(y[0][0], 2)) + ' | d2 = ' + str(round(y[1][0], 2)))
+    print('d1 = ' + str(y[0][0]))
+    # print('d1 = ' + str(round(y[0][0], 2)) + ' | d2 = ' + str(round(y[1][0], 2)))
 
     # -- BACKWARD
     # errores de la capa de salida

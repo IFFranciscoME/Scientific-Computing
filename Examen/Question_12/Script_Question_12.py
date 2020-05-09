@@ -8,15 +8,16 @@
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 
 # Leer datos de entrada
 datos = pd.read_excel('Question_12/Question_12.xlsx', sheet_name='datos')
 
 # Separar datos de entrenamiento y datos de prueba
-datos_train = datos[datos['y'] != '?']*10
+datos_train = datos[datos['y'] != '?']
 datos_train.reset_index(inplace=True, drop=True)
 
-datos_test = datos[datos['y'] == '?']*10
+datos_test = datos[datos['y'] == '?']
 datos_test.reset_index(inplace=True, drop=True)
 
 # -- Entrenamiento
@@ -25,7 +26,7 @@ datos_d = np.array(pd.DataFrame(datos_train.iloc[:, 1])).astype('float64')
 
 # -- PERCEPTRON MULTICAPA
 # [Entradas, Neuronas Ocultas, Salidas, Alfa]
-params = [1, 1, 1, 3.5]
+params = [1, 4, 1, 1.5]
 
 
 # ------------------------------------------------------------------------------- Proceso -- #
@@ -49,7 +50,7 @@ def funcion_activacion(param_f, param_x, param_alfa):
 
     """
     if param_f == 'sigmoid':
-        return 1 / (1 + np.e ** (-param_alfa * param_x))
+        return 1 / (1 + np.exp(-param_alfa * param_x))
     else:
         print('funcion no reconocida')
 
@@ -112,9 +113,9 @@ while error > 1e-6:
 # print('\n')
 # print('Termino entrenamiento')
 # print('los pesos en capa oculta quedaron: ')
-# print(w_h)
+print(w_h)
 # print('los pesos en capa de salida quedaron: ')
-# print(w_o)
+print(w_o)
 
 
 # -- ------------------------------------------------------------- PREDICCION CON PRUEBAS -- #
@@ -123,35 +124,27 @@ while error > 1e-6:
 # datos_x = np.array(pd.DataFrame(df_data['test_x']).iloc[:, 0:-3], dtype=int)
 datos_d = np.array(pd.DataFrame(datos_test.iloc[:, 0])).astype(float)
 
-for q in range(len(datos_x)):
+print(' ----- PRUEBA iniciada -----')
+salidas_test = list()
+for q in range(len(datos_d)):
+    # q = 0
     # vector Q de N entradas
-    x_j = datos_x[q, :][np.newaxis, :]
+    x_j = datos_d[q, :][np.newaxis, :]
 
     # -- FORWARD
     # red de la capa oculta
     net_h = w_h.dot(x_j.T)
     # salidas de capa oculta
     y_h = funcion_activacion(param_f='sigmoid', param_x=net_h, param_alfa=params[3])
+    print(x_j)
+    sa = np.sum(y_h)
     # red de capa de salida
     net_o = w_o.dot(y_h)
     # salida
     y = funcion_activacion(param_f='sigmoid', param_x=net_o, param_alfa=params[3])
-    # print(y.T)
-    print('d1 = ' + str(round(y[0][0], 2)))
+    salidas_test.append(sa)
 
-    # -- BACKWARD
-    # errores de la capa de salida
-    delta_o = np.multiply((datos_d[q][np.newaxis, :].T - y), np.multiply(y, (1-y)))
-    # errores de la capa oculta
-    delta_h = np.multiply(np.multiply(y_h, (1-y_h)), w_o.T.dot(delta_o))
-    # correcciones para pesos de capa de salida
-    delta_w_o = (params[3]*delta_o).dot(y_h.T)
-    # correcciones para pesos de capa oculta
-    delta_w_h = (params[3]*delta_h).dot(x_j)
-
-    # calculo de la cota de error
-    error = abs(sum(delta_o))
-
+salidas_test = [salidas_test[i][0][0] for i in range(0, len(salidas_test))]
 
 # -- ---------------------------------------------------------------------- MODELO LINEAL -- #
 
@@ -167,3 +160,5 @@ print('ECUACION: y = {0} * x + {1}'.format(m[0], b[0]))
 
 y_pred = model.intercept_ + model.coef_ * x_new
 print('Pronostico:', y_pred, sep='\n')
+
+print(mean_squared_error(y_pred, salidas_test))
