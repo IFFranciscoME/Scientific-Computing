@@ -18,12 +18,12 @@ datos_train = datos[(datos['d1'] != '?') | (datos['d2'] != '?')]
 datos_train.reset_index(inplace=True, drop=True)
 
 # -- Entrenamiento
-datos_x_train = np.array(datos_train.iloc[:, 0:-2], dtype=int)
-datos_d_train = np.array(datos_train.iloc[:, -2:], dtype=int)
+datos_x = np.array(datos_train.iloc[:, 0:-2], dtype=int)
+datos_d = np.array(datos_train.iloc[:, -2:], dtype=int)
 
 # -- PERCEPTRON MULTICAPA
 # [Entradas, Neuronas Ocultas, Salidas, Alfa]
-params = [4, 8, 1, 2.5]
+params = [4, 8, 2, 2.5]
 
 
 # ------------------------------------------------------------------------------- Proceso -- #
@@ -66,11 +66,12 @@ error = 1
 # entrenar hasta lograr pasar un error objetivo
 while error > 1e-6:
     # ciclo para las q observaciones de entrenamiento
-    for q in range(len(datos_x_train)):
-        # q = 0
+    print(' ----- Entrenamiento terminado -----')
+    for q in range(len(datos_x)):
         print('iteracion (Q): ' + str(q))
+
         # vector Q de N entradas
-        x_j = datos_x_train[q, :][np.newaxis, :]
+        x_j = datos_x[q, :][np.newaxis, :]
 
         # -- FORWARD
         # red de la capa oculta
@@ -81,12 +82,12 @@ while error > 1e-6:
         net_o = w_o.dot(y_h)
         # salida
         y = funcion_activacion(param_f='sigmoid', param_x=net_o, param_alfa=params[3])
-        print(y.T)
-        # print('d1 = ' + str(round(y[0][0], 2)) + ' | d2 = ' + str(round(y[1][0], 2)))
+        # print(y.T)
+        print('d1 = ' + str(round(y[0][0], 2)) + ' | d2 = ' + str(round(y[1][0], 2)))
 
         # -- BACKWARD
         # errores de la capa de salida
-        delta_o = np.multiply((datos_d_train[q][np.newaxis, :].T - y), np.multiply(y, (1-y)))
+        delta_o = np.multiply((datos_d[q][np.newaxis, :].T - y), np.multiply(y, (1-y)))
         # errores de la capa oculta
         delta_h = np.multiply(np.multiply(y_h, (1-y_h)), w_o.T.dot(delta_o))
         # correcciones para pesos de capa de salida
@@ -102,29 +103,23 @@ while error > 1e-6:
         # actualizacion de pesos para capa de salida
         w_o = w_o + delta_w_o
         # verificacion de error
-    print('El error es: ' + str(error))
+    print('da un error de: ' + str(error))
 
-print(' ----- ENTRENAMIENTO terminado -----')
-
-# print('Termino entrenamiento')
-# print('los pesos en capa oculta quedaron: ')
-# print(w_h)
-# print('los pesos en capa de salida quedaron: ')
-# print(w_o)
+print('Termino entrenamiento')
+print('los pesos en capa oculta quedaron: ')
+print(w_h)
+print('los pesos en capa de salida quedaron: ')
+print(w_o)
 
 # -- ------------------------------------------------------------- PREDICCION CON PRUEBAS -- #
 
-# -- volver a validar con datos de entrenamiento
-datos_x_train = np.array(datos_train.iloc[:, 0:-2], dtype=int)
-
 # -- Prueba
-datos_x_test = np.array(datos_test.iloc[:, 0:-2], dtype=int)
+datos_x = np.array(datos_test.iloc[:, 0:-2], dtype=int)
+# datos_d = np.array(datos_test.iloc[:, -2:], dtype=int)
 
-print(' ----- PRUEBA iniciada -----')
-
-for q in range(len(datos_x_test)):
+for q in range(len(datos_x)):
     # vector Q de N entradas
-    x_j = datos_x_test[q, :][np.newaxis, :]
+    x_j = datos_x[q, :][np.newaxis, :]
 
     # -- FORWARD
     # red de la capa oculta
@@ -135,5 +130,18 @@ for q in range(len(datos_x_test)):
     net_o = w_o.dot(y_h)
     # salida
     y = funcion_activacion(param_f='sigmoid', param_x=net_o, param_alfa=params[3])
-    print(y.T)
-    # print('d1 = ' + str(round(y[0][0], 2)) + ' | d2 = ' + str(round(y[1][0], 2)))
+    # print(y.T)
+    print('d1 = ' + str(round(y[0][0], 2)) + ' | d2 = ' + str(round(y[1][0], 2)))
+
+    # -- BACKWARD
+    # errores de la capa de salida
+    delta_o = np.multiply((datos_d[q][np.newaxis, :].T - y), np.multiply(y, (1-y)))
+    # errores de la capa oculta
+    delta_h = np.multiply(np.multiply(y_h, (1-y_h)), w_o.T.dot(delta_o))
+    # correcciones para pesos de capa de salida
+    delta_w_o = (params[3]*delta_o).dot(y_h.T)
+    # correcciones para pesos de capa oculta
+    delta_w_h = (params[3]*delta_h).dot(x_j)
+
+    # calculo de la cota de error
+    error = abs(sum(delta_o))
