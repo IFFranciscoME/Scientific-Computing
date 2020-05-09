@@ -97,7 +97,7 @@ c2_g = 'x*y**2 + x - 10*y + 8'
 variables = [x, y]
 
 # plots expandido para vision general
-# plot3d(c1_f, c1_g)
+plot3d(c1_f, c1_g)
 
 # Buscar solucion al sistema
 ejercicio = newton_raphson(param_sis=[c2_f, c2_g],
@@ -116,12 +116,6 @@ solucion = np.vstack(np.array(ejercicio['solucion']))
 sistema = sp.Matrix([c2_f, c2_g])
 res = sistema.subs(list(zip(variables, solucion)))
 print('comprobacion:\n', np.array(res))
-
-# plot focalizado a resultados
-plot3d(c1_f, c1_g,
-       (x, solucion[0][0]*.90, solucion[0][0]*1.10),
-       (y, solucion[1][0]*.90, solucion[1][0]*1.10))
-
 
 # -- ----------------------------------------------------------------------- EJERCICIO 1 -- #
 # c1_f = 'x**2 + y - 1'
