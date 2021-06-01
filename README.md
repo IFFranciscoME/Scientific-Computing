@@ -1,1 +1,3 @@
-# IDI_II_GIT
+# Various Scientific Computing Exercises
+
+Numerical Methods and Miscellaneous Scientific Computing Exercises
